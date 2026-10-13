@@ -1,0 +1,581 @@
+// Interface de la manette : elle se transforme selon la scène.
+// Utilisée sur le téléphone, et sur l'écran en mode « sans téléphone ».
+
+import { useEffect, useRef, useState } from 'react';
+import {
+  availableSpots,
+  currentNode,
+  fmt,
+  phoneMode,
+  PHONE_MODE_LABEL,
+  type GameState,
+  type Input,
+  type PhoneMode,
+} from '../../shared/engine.ts';
+import type { Fx } from '../../shared/protocol.ts';
+import type { Story, Tone } from '../../shared/types.ts';
+import { Photo } from '../common/art/Photo.tsx';
+import { cue, setMuted } from '../common/feedback.ts';
+import { EndSummary } from '../common/EndSummary.tsx';
+
+export const TONE_LABEL: Record<Tone, string> = {
+  franchise: 'Franchise',
+  esquive: 'Esquive',
+  mensonge: 'Mensonge',
+  retourner: 'Retourner la question',
+  action: 'Agir',
+};
+
+const MODE_ICON: Record<PhoneMode, string> = {
+  attente: '◌',
+  telecommande: '▶',
+  dialogue: '❝',
+  navigation: '✥',
+  telephone: '✉',
+  digicode: '#',
+  action: '!',
+  saisie: '⌨',
+  fin: '★',
+};
+
+interface Props {
+  story: Story;
+  state: GameState;
+  send: (i: Input) => void;
+  sendFx: (fx: Fx) => void;
+  connection: string;
+  serverOffset: number;
+}
+
+export function ControllerView({ story, state, send, sendFx, connection, serverOffset }: Props) {
+  const mode = phoneMode(story, state);
+  const [shown, setShown] = useState<PhoneMode | null>(null);
+  const [dossier, setDossier] = useState(false);
+  const prevMode = useRef<PhoneMode>(mode);
+
+  useEffect(() => {
+    if (prevMode.current !== mode) {
+      if (prevMode.current === 'digicode') cue('succes');
+      prevMode.current = mode;
+      if (mode === 'telephone') cue('message');
+      else if (mode === 'action') cue('alerte');
+      else cue('mode');
+      setShown(mode);
+      setDossier(false);
+      const t = setTimeout(() => setShown(null), 1100);
+      return () => clearTimeout(t);
+    }
+  }, [mode]);
+
+  const tap = (i: Input) => {
+    cue('tap');
+    send(i);
+  };
+
+  const canDossier = mode !== 'telephone' && mode !== 'action' && mode !== 'attente';
+
+  return (
+    <div className={`ctrl mode-${mode}`}>
+      <header className="ctrl-top">
+        <span className={`dot ${connection === 'connecte' || connection === 'solo' ? 'ok' : 'ko'}`} />
+        <span className="ctrl-mode">
+          <span className="ctrl-mode-icon">{MODE_ICON[mode]}</span> {PHONE_MODE_LABEL[mode]}
+        </span>
+        {canDossier && (
+          <button className="ctrl-dossier-btn" onClick={() => setDossier((d) => !d)} aria-expanded={dossier}>
+            {dossier ? 'Fermer' : `Dossier · ${state.clues.length}`}
+          </button>
+        )}
+      </header>
+
+      <main className="ctrl-body" key={mode}>
+        {dossier ? (
+          <Dossier story={story} state={state} send={send} />
+        ) : (
+          <ModeView mode={mode} story={story} state={state} tap={tap} send={send} sendFx={sendFx} serverOffset={serverOffset} />
+        )}
+      </main>
+
+      {shown && (
+        <div className="ctrl-morph" aria-live="polite">
+          <div className="ctrl-morph-icon">{MODE_ICON[shown]}</div>
+          <div className="ctrl-morph-label">{PHONE_MODE_LABEL[shown]}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ModeView({
+  mode,
+  story,
+  state,
+  tap,
+  send,
+  sendFx,
+  serverOffset,
+}: {
+  mode: PhoneMode;
+  story: Story;
+  state: GameState;
+  tap: (i: Input) => void;
+  send: (i: Input) => void;
+  sendFx: (fx: Fx) => void;
+  serverOffset: number;
+}) {
+  const node = currentNode(story, state);
+  switch (mode) {
+    case 'attente':
+      return (
+        <div className="m-attente">
+          <h1 className="brand">Le Lotissement</h1>
+          <p>Votre téléphone est relié à l’écran. Il changera de rôle au fil de l’histoire.</p>
+          <Toggle label="Temps élargi pour les actions" checked={state.settings.extendedTime} onChange={(v) => send({ type: 'settings', extendedTime: v })} />
+          <button className="big-btn" onClick={() => tap({ type: 'start' })}>
+            Commencer
+          </button>
+          <p className="small">Conseil : montez le son de l’ordinateur, gardez le téléphone en main.</p>
+        </div>
+      );
+
+    case 'telecommande': {
+      const speaker = node.type === 'line' ? (node.speaker === 'heroine' ? state.alias : node.speaker ? story.characters[node.speaker].name : null) : null;
+      return (
+        <div className="m-remote">
+          <p className="hint">{node.type === 'title' ? node.kicker : speaker ?? (node.type === 'line' && node.memory ? 'Souvenir' : 'Regardez l’écran')}</p>
+          <button className="remote-btn" onClick={() => tap({ type: 'advance' })} aria-label="Continuer">
+            <span>Continuer</span>
+          </button>
+        </div>
+      );
+    }
+
+    case 'dialogue':
+      if (node.type !== 'choice') return null;
+      return (
+        <div className="m-dialogue">
+          <p className="prompt">{fmt(node.prompt, state)}</p>
+          <div className="options">
+            {node.options.map((o) => (
+              <button key={o.id} className={`option tone-${o.tone ?? 'franchise'}`} onClick={() => tap({ type: 'choose', option: o.id })}>
+                {o.tone && <span className="tone">{TONE_LABEL[o.tone]}</span>}
+                <span className="label">{fmt(o.label, state)}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      );
+
+    case 'navigation':
+      return node.type === 'explore' ? <Navigation node={node} state={state} tap={tap} sendFx={sendFx} /> : null;
+
+    case 'telephone':
+      return node.type === 'sms' ? <HeroinePhone node={node} state={state} story={story} tap={tap} send={send} /> : null;
+
+    case 'digicode':
+      return node.type === 'keypad' ? <Keypad node={node} state={state} tap={tap} sendFx={sendFx} /> : null;
+
+    case 'action':
+      return node.type === 'qte' ? <Qte node={node} state={state} send={send} sendFx={sendFx} serverOffset={serverOffset} /> : null;
+
+    case 'saisie':
+      return node.type === 'input' ? <TextInput prompt={node.prompt} suggestions={node.suggestions} onSubmit={(text) => tap({ type: 'input-submit', text })} /> : null;
+
+    case 'fin':
+      return (
+        <div className="m-fin">
+          <EndSummary story={story} state={state} compact />
+          <button className="big-btn" onClick={() => tap({ type: 'restart' })}>
+            Rejouer l’épisode
+          </button>
+        </div>
+      );
+  }
+}
+
+function Toggle({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <label className="toggle">
+      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} />
+      <span className="toggle-track" />
+      <span>{label}</span>
+    </label>
+  );
+}
+
+// ───────────────────────────── Navigation
+function Navigation({
+  node,
+  state,
+  tap,
+  sendFx,
+}: {
+  node: Extract<ReturnType<typeof currentNode>, { type: 'explore' }>;
+  state: GameState;
+  tap: (i: Input) => void;
+  sendFx: (fx: Fx) => void;
+}) {
+  const spots = availableSpots(node, state);
+  const current = spots[state.nav.cursor] ?? spots[0];
+  return (
+    <div className="m-nav">
+      <p className="prompt">{node.prompt}</p>
+      <div className="dpad">
+        <button className="dpad-arrow left" onClick={() => tap({ type: 'nav-move', dir: -1 })} aria-label="Point précédent">
+          ‹
+        </button>
+        <button className="dpad-center" onClick={() => tap({ type: 'nav-select' })}>
+          <small>{current?.exit ? 'Aller' : 'Examiner'}</small>
+          <strong>{current?.label}</strong>
+        </button>
+        <button className="dpad-arrow right" onClick={() => tap({ type: 'nav-move', dir: 1 })} aria-label="Point suivant">
+          ›
+        </button>
+      </div>
+      <ul className="spot-list">
+        {spots.map((sp, i) => {
+          const seen = state.visited.includes(`${node.id}:${sp.id}`);
+          return (
+            <li key={sp.id}>
+              <button
+                className={`spot ${i === state.nav.cursor ? 'current' : ''} ${sp.exit ? 'exit' : ''}`}
+                onPointerEnter={() => sendFx({ kind: 'nav-hover', spot: sp.id })}
+                onPointerLeave={() => sendFx({ kind: 'nav-hover', spot: null })}
+                onClick={() => tap({ type: 'nav-select', spot: sp.id })}
+              >
+                <span className="spot-icon">{sp.exit ? '→' : sp.icon === 'personne' ? '◉' : sp.icon === 'objet' ? '◆' : '◎'}</span>
+                <span>{sp.label}</span>
+                {seen && !sp.exit && <span className="seen">vu</span>}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+}
+
+// ───────────────────────────── Téléphone de l'héroïne
+function HeroinePhone({
+  node,
+  state,
+  story,
+  tap,
+  send,
+}: {
+  node: Extract<ReturnType<typeof currentNode>, { type: 'sms' }>;
+  state: GameState;
+  story: Story;
+  tap: (i: Input) => void;
+  send: (i: Input) => void;
+}) {
+  const thread = state.sms[node.thread];
+  const end = useRef<HTMLDivElement>(null);
+  useEffect(() => end.current?.scrollIntoView({ behavior: 'smooth' }), [thread?.messages.length, state.phone.opened]);
+  const hour = node.thread === 'anonyme' ? '00:14' : '17:32';
+
+  if (!state.phone.opened) {
+    const last = thread.messages[thread.messages.length - 1];
+    return (
+      <div className="hp hp-lock" onClick={() => tap({ type: 'sms-open' })}>
+        <div className="hp-clock">{hour}</div>
+        <div className="hp-date">{node.thread === 'anonyme' ? 'dimanche 15 juin' : 'samedi 14 juin'}</div>
+        <button className="hp-notif">
+          <span className="hp-notif-app">MESSAGES · maintenant</span>
+          <strong>{node.contact}</strong>
+          <span>{last?.photo ? '📷 Photo' : last?.text}</span>
+        </button>
+        <p className="hp-unlock">Touchez pour ouvrir</p>
+      </div>
+    );
+  }
+
+  if (state.phone.photo) {
+    return (
+      <div className="hp-photo" onClick={() => send({ type: 'photo', photo: null })}>
+        <Photo id={state.phone.photo} />
+        <p>{story.photos[state.phone.photo]?.caption}</p>
+        <p className="small">Affichée aussi sur l’écran. Touchez pour fermer.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="hp hp-open">
+      <div className="hp-bar">
+        <span>{hour}</span>
+        <strong>{node.contact}</strong>
+        <span>●●●</span>
+      </div>
+      <div className="hp-thread">
+        {thread.messages.map((m, i) => (
+          <div key={i} className={`bubble ${m.from}`}>
+            {m.photo ? (
+              <button className="bubble-photo" onClick={() => tap({ type: 'photo', photo: m.photo! })} aria-label="Ouvrir la photo">
+                <Photo id={m.photo} />
+              </button>
+            ) : (
+              m.text
+            )}
+          </div>
+        ))}
+        <div ref={end} />
+      </div>
+      <div className="hp-replies">
+        {node.replies.map((r) => (
+          <button key={r.id} className="hp-reply" onClick={() => tap({ type: 'sms-reply', reply: r.id })}>
+            {fmt(r.text, state)}
+          </button>
+        ))}
+        {node.dismiss && (
+          <button className="hp-dismiss" onClick={() => tap({ type: 'sms-dismiss' })}>
+            {node.dismiss.label}
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ───────────────────────────── Digicode
+function Keypad({
+  node,
+  state,
+  tap,
+  sendFx,
+}: {
+  node: Extract<ReturnType<typeof currentNode>, { type: 'keypad' }>;
+  state: GameState;
+  tap: (i: Input) => void;
+  sendFx: (fx: Fx) => void;
+}) {
+  const [entry, setEntry] = useState('');
+  const len = node.code.length;
+  const lastAttempts = useRef(state.keypad.attempts);
+  useEffect(() => {
+    if (state.keypad.attempts !== lastAttempts.current) {
+      lastAttempts.current = state.keypad.attempts;
+      cue('erreur');
+      setEntry('');
+      sendFx({ kind: 'keypad-entry', value: '' });
+    }
+  }, [state.keypad.attempts, sendFx]);
+
+  const update = (v: string) => {
+    setEntry(v);
+    sendFx({ kind: 'keypad-entry', value: v });
+  };
+  const press = (k: string) => {
+    if (k === 'C') return update('');
+    if (k === 'OK') {
+      if (entry.length === len) tap({ type: 'keypad-submit', code: entry });
+      return;
+    }
+    if (entry.length < len) {
+      cue('tap');
+      update(entry + k);
+    }
+  };
+  const hints = node.hints.filter((h) => state.keypad.attempts >= h.after);
+  return (
+    <div className="m-keypad">
+      <p className="prompt">{node.prompt}</p>
+      <div className={`kp-screen ${state.keypad.error && entry === '' ? 'err' : ''}`}>
+        {Array.from({ length: len }, (_, i) => (
+          <span key={i}>{entry[i] ?? '–'}</span>
+        ))}
+      </div>
+      <div className="kp-grid">
+        {['1', '2', '3', '4', '5', '6', '7', '8', '9', 'C', '0', 'OK'].map((k) => (
+          <button key={k} className={`kp-key ${k === 'OK' ? 'ok' : k === 'C' ? 'clear' : ''}`} onClick={() => press(k)} disabled={k === 'OK' && entry.length !== len}>
+            {k === 'C' ? '⌫' : k === 'OK' ? '✓' : k}
+          </button>
+        ))}
+      </div>
+      {state.keypad.attempts > 0 && <p className="kp-attempts">Essais infructueux : {state.keypad.attempts}</p>}
+      {hints.map((h, i) => (
+        <p key={i} className="kp-hint">
+          {h.text}
+        </p>
+      ))}
+      {hints.length === 0 && <p className="small">Les indices recueillis sont dans le dossier.</p>}
+    </div>
+  );
+}
+
+// ───────────────────────────── QTE
+function Qte({
+  node,
+  state,
+  send,
+  sendFx,
+  serverOffset,
+}: {
+  node: Extract<ReturnType<typeof currentNode>, { type: 'qte' }>;
+  state: GameState;
+  send: (i: Input) => void;
+  sendFx: (fx: Fx) => void;
+  serverOffset: number;
+}) {
+  const [progress, setProgress] = useState(0);
+  const [held, setHeld] = useState(false);
+  const [remaining, setRemaining] = useState(1);
+  const prog = useRef(0);
+  const holding = useRef(false);
+  const done = useRef(false);
+
+  useEffect(() => {
+    let raf = 0;
+    let lastFx = 0;
+    let last = performance.now();
+    const loop = (t: number) => {
+      const dt = t - last;
+      last = t;
+      // Relâcher fait redescendre doucement la jauge : pas de punition sèche.
+      const delta = holding.current ? dt / node.hold : -dt / (node.hold * 3);
+      prog.current = Math.max(0, Math.min(1, prog.current + delta));
+      setProgress(prog.current);
+      if (prog.current >= 1 && !done.current) {
+        done.current = true;
+        cue('succes');
+        send({ type: 'qte-success' });
+      }
+      if (t - lastFx > 100) {
+        lastFx = t;
+        sendFx({ kind: 'qte-progress', value: prog.current });
+      }
+      if (state.qte) {
+        const total = state.qte.deadline - state.qte.startedAt;
+        setRemaining(Math.max(0, (state.qte.deadline - (Date.now() + serverOffset)) / total));
+      }
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, [node.hold, send, sendFx, state.qte, serverOffset]);
+
+  const start = (e: React.PointerEvent) => {
+    e.preventDefault();
+    holding.current = true;
+    setHeld(true);
+    try {
+      navigator.vibrate?.(20);
+    } catch {
+      /* pas de vibration */
+    }
+  };
+  const stop = () => {
+    holding.current = false;
+    setHeld(false);
+  };
+
+  return (
+    <div className="m-qte">
+      <p className="qte-title">{node.prompt}</p>
+      <p className="qte-instr">{node.instruction}</p>
+      <div className="qte-timer">
+        <div style={{ transform: `scaleX(${remaining})` }} />
+      </div>
+      <button
+        className={`qte-btn ${held ? 'held' : ''}`}
+        onPointerDown={start}
+        onPointerUp={stop}
+        onPointerCancel={stop}
+        onPointerLeave={stop}
+        onContextMenu={(e) => e.preventDefault()}
+        style={{ ['--p' as string]: progress }}
+      >
+        <span>Maintenir</span>
+      </button>
+      {state.settings.extendedTime && <p className="small">Temps élargi activé.</p>}
+    </div>
+  );
+}
+
+// ───────────────────────────── Saisie
+function TextInput({ prompt, suggestions, onSubmit }: { prompt: string; suggestions: string[]; onSubmit: (t: string) => void }) {
+  const [text, setText] = useState(suggestions[0] ?? '');
+  return (
+    <form
+      className="m-input"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (text.trim().length >= 2) onSubmit(text);
+      }}
+    >
+      <p className="prompt">{prompt}</p>
+      <div className="terminal">
+        <span className="caret">›</span>
+        <input value={text} onChange={(e) => setText(e.target.value)} maxLength={24} autoComplete="off" autoCapitalize="words" spellCheck={false} aria-label={prompt} />
+      </div>
+      <div className="chips">
+        {suggestions.map((s) => (
+          <button type="button" key={s} className="chip" onClick={() => setText(s)}>
+            {s}
+          </button>
+        ))}
+      </div>
+      <button className="big-btn" type="submit" disabled={text.trim().length < 2}>
+        Valider
+      </button>
+    </form>
+  );
+}
+
+// ───────────────────────────── Dossier
+function Dossier({ story, state, send }: { story: Story; state: GameState; send: (i: Input) => void }) {
+  const [tab, setTab] = useState<'indices' | 'messages' | 'reglages'>('indices');
+  const [mute, setMute] = useState(false);
+  return (
+    <div className="m-dossier">
+      <div className="tabs" role="tablist">
+        {(['indices', 'messages', 'reglages'] as const).map((t) => (
+          <button key={t} role="tab" aria-selected={tab === t} className={tab === t ? 'on' : ''} onClick={() => setTab(t)}>
+            {t === 'indices' ? 'Indices' : t === 'messages' ? 'Messages' : 'Réglages'}
+          </button>
+        ))}
+      </div>
+      {tab === 'indices' &&
+        (state.clues.length ? (
+          <ul className="clues">
+            {state.clues.map((c) => (
+              <li key={c}>
+                <strong>{story.clues[c].title}</strong>
+                <span>{story.clues[c].text}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="small">Aucun indice pour l’instant.</p>
+        ))}
+      {tab === 'messages' &&
+        (Object.keys(state.sms).length ? (
+          Object.entries(state.sms).map(([id, th]) => (
+            <div key={id} className="dossier-thread">
+              <strong>{th.contact}</strong>
+              {th.messages.map((m, i) => (
+                <p key={i} className={m.from}>
+                  {m.photo ? `📷 ${story.photos[m.photo]?.caption}` : m.text}
+                </p>
+              ))}
+            </div>
+          ))
+        ) : (
+          <p className="small">Aucun message.</p>
+        ))}
+      {tab === 'reglages' && (
+        <div className="settings">
+          <Toggle label="Temps élargi pour les actions" checked={state.settings.extendedTime} onChange={(v) => send({ type: 'settings', extendedTime: v })} />
+          <Toggle
+            label="Couper les sons du téléphone"
+            checked={mute}
+            onChange={(v) => {
+              setMute(v);
+              setMuted(v);
+            }}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
