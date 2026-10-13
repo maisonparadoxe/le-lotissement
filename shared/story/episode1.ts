@@ -35,7 +35,7 @@ const nodes: Record<string, StoryNode> = {
     narr('Le coma, puis les opérations. Sept interventions pour reconstruire un visage que vous ne reconnaissez toujours pas dans le miroir.'),
     narr("Votre voix aussi a changé : plus grave, éraillée par des mois d'intubation. Les médecins disent que c'est une chance. Vous n'êtes pas sûre de ce qu'ils entendent par là."),
     memory("De la nuit du 21 juin, il ne reste que des éclats. De l'eau froide. Une lumière bleue. Une voix qui disait : « Laisse-la. »"),
-    narr("Pour tout le monde, Élise Marchal s'est noyée dans l'étang du Moulin. On n'a jamais retrouvé le corps."),
+    narr("Pour tout le monde, Alice Marchal s'est noyée dans l'étang du Moulin. On n'a jamais retrouvé le corps."),
     narr("Sur le bail de la maison n°9, l'agence a inscrit un autre nom."),
     input('Quel nom porte votre nouvelle identité ?', ['Claire Ferrand', 'Nora Vidal', 'Juliette Armand']),
     narr("{alias}. Traductrice, quarante et un ans, sans enfant, sans passé. Le nom d'une femme qui n'en avait plus besoin, et des papiers qui ont coûté tout ce qui vous restait."),
@@ -53,7 +53,7 @@ const nodes: Record<string, StoryNode> = {
       { id: 'plaque', label: "La plaque de l'entrée", at: [12, 58], icon: 'regarder', next: 's1.plaque' },
       { id: 'vasseur', label: 'La maison des Vasseur (n°11)', at: [29, 52], icon: 'regarder', next: 's1.vasseur' },
       { id: 'jardinier', label: "L'homme au taille-haie", at: [62, 64], icon: 'personne', next: 's1.antoine' },
-      { id: 'maison', label: 'Rentrer chez vous (n°9)', at: [80, 52], icon: 'porte', next: 's1.helene', exit: true },
+      { id: 'maison', label: 'Rentrer chez vous (n°9)', at: [80, 52], icon: 'porte', next: 's1.beatrice', exit: true },
     ]),
   ]),
 
@@ -64,7 +64,7 @@ const nodes: Record<string, StoryNode> = {
 
   ...seq('s1.vasseur', allee('jour'), [
     narr("Volets ouverts, géraniums alignés au cordeau. Sur la terrasse, deux tasses et une théière."),
-    narr("Hélène a toujours reçu à seize heures. Vous le savez sans avoir besoin de vous en souvenir, et ça vous fait peur."),
+    narr("Béatrice a toujours reçu à seize heures. Vous le savez sans avoir besoin de vous en souvenir, et ça vous fait peur."),
   ], 's1.explore'),
 
   ...seq('s1.antoine', allee('jour'), [
@@ -96,53 +96,53 @@ const nodes: Record<string, StoryNode> = {
     leave('antoine'),
   ], 's1.explore'),
 
-  ...seq('s1.helene', allee('jour'), [
+  ...seq('s1.beatrice', allee('jour'), [
     narr("Vous n'avez pas fait trois pas qu'une voix vous rattrape."),
-    enter({ id: 'helene', pos: 'centre', mood: 'sourire' }),
-    ...say('helene', 'Vous devez être {alias} ! Hélène Vasseur, la maison juste à côté. Et, pour mes péchés, présidente de l’association syndicale.'),
-    ...say('helene', "Je vous ai apporté de la confiture d'abricots. C'est la tradition, ici : on accueille les gens."),
-    narr("Hélène. Votre meilleure amie, autrefois. Elle vous serre la main un peu trop longtemps, et ses yeux font l'inventaire : chaussures, sac, mains, visage."),
-    ...say('helene', "Alors, qu'est-ce qui amène quelqu'un comme vous à Bellécourt ? Personne ne vient ici par hasard."),
-    choice('Que dites-vous à Hélène ?', [
-      { id: 'convalescence', label: "J'avais besoin de calme. Je sors d'une longue convalescence.", tone: 'franchise', effects: { rel: { helene: 1 }, exposure: 1, flags: { dit_convalescence: true }, log: 'Vous avez parlé de votre convalescence à Hélène.' }, next: 's1.helene.convalescence' },
-      { id: 'loyer', label: 'Le loyer, surtout. Et le silence.', tone: 'esquive', next: 's1.helene.loyer' },
-      { id: 'mutation', label: 'Une mutation. Je traduis pour une entreprise de la région.', tone: 'mensonge', effects: { flags: { mensonge_travail: true } }, next: 's1.helene.mutation' },
-      { id: 'vous', label: "Et vous, Hélène ? Qu'est-ce qui vous retient ici ?", tone: 'retourner', effects: { rel: { helene: -1 }, flags: { helene_testee: true }, log: 'Vous avez retourné la question à Hélène dès la première rencontre.' }, next: 's1.helene.vous' },
+    enter({ id: 'beatrice', pos: 'centre', mood: 'sourire' }),
+    ...say('beatrice', 'Vous devez être {alias} ! Béatrice Vasseur, la maison juste à côté. Et, pour mes péchés, présidente de l’association syndicale.'),
+    ...say('beatrice', "Je vous ai apporté de la confiture d'abricots. C'est la tradition, ici : on accueille les gens."),
+    narr("Béatrice. Votre meilleure amie, autrefois. Elle vous serre la main un peu trop longtemps, et ses yeux font l'inventaire : chaussures, sac, mains, visage."),
+    ...say('beatrice', "Alors, qu'est-ce qui amène quelqu'un comme vous à Bellécourt ? Personne ne vient ici par hasard."),
+    choice('Que dites-vous à Béatrice ?', [
+      { id: 'convalescence', label: "J'avais besoin de calme. Je sors d'une longue convalescence.", tone: 'franchise', effects: { rel: { beatrice: 1 }, exposure: 1, flags: { dit_convalescence: true }, log: 'Vous avez parlé de votre convalescence à Béatrice.' }, next: 's1.beatrice.convalescence' },
+      { id: 'loyer', label: 'Le loyer, surtout. Et le silence.', tone: 'esquive', next: 's1.beatrice.loyer' },
+      { id: 'mutation', label: 'Une mutation. Je traduis pour une entreprise de la région.', tone: 'mensonge', effects: { flags: { mensonge_travail: true } }, next: 's1.beatrice.mutation' },
+      { id: 'vous', label: "Et vous, Béatrice ? Qu'est-ce qui vous retient ici ?", tone: 'retourner', effects: { rel: { beatrice: -1 }, flags: { beatrice_testee: true }, log: 'Vous avez retourné la question à Béatrice dès la première rencontre.' }, next: 's1.beatrice.vous' },
     ]),
   ]),
-  ...seq('s1.helene.convalescence', { decor: 'allee', time: 'jour', cast: [{ id: 'helene', pos: 'centre', mood: 'trouble' }] }, [
-    ...say('helene', "Oh, je suis désolée. Vous verrez, ici, on prend soin les uns des autres. C'est même ce qu'on fait de mieux."),
-  ], 's1.helene.fin'),
-  ...seq('s1.helene.loyer', { decor: 'allee', time: 'jour', cast: [{ id: 'helene', pos: 'centre', mood: 'neutre' }] }, [
-    ...say('helene', 'Le silence… Oui. On en a beaucoup, ici.'),
-  ], 's1.helene.fin'),
-  ...seq('s1.helene.mutation', { decor: 'allee', time: 'jour', cast: [{ id: 'helene', pos: 'centre', mood: 'sourire' }] }, [
-    ...say('helene', 'Comme c’est intéressant. Il faudra me dire laquelle, je connais tout le monde.'),
-  ], 's1.helene.fin'),
-  ...seq('s1.helene.vous', { decor: 'allee', time: 'jour', cast: [{ id: 'helene', pos: 'centre', mood: 'froid' }] }, [
-    ...say('helene', "Moi ? Les souvenirs, j'imagine. Et les gens qui ont besoin de moi."),
-  ], 's1.helene.fin'),
-  ...seq('s1.helene.fin', { decor: 'allee', time: 'jour', cast: [{ id: 'helene', pos: 'centre', mood: 'sourire' }] }, [
-    ...say('helene', 'Enfin ! Les Delaunay donnent un dîner ce soir, Marc et Isabelle, au 14. Vous êtes invitée : j’ai insisté.'),
-    ...say('helene', 'Donnez-moi votre numéro, je vous envoie tout ça.'),
+  ...seq('s1.beatrice.convalescence', { decor: 'allee', time: 'jour', cast: [{ id: 'beatrice', pos: 'centre', mood: 'trouble' }] }, [
+    ...say('beatrice', "Oh, je suis désolée. Vous verrez, ici, on prend soin les uns des autres. C'est même ce qu'on fait de mieux."),
+  ], 's1.beatrice.fin'),
+  ...seq('s1.beatrice.loyer', { decor: 'allee', time: 'jour', cast: [{ id: 'beatrice', pos: 'centre', mood: 'neutre' }] }, [
+    ...say('beatrice', 'Le silence… Oui. On en a beaucoup, ici.'),
+  ], 's1.beatrice.fin'),
+  ...seq('s1.beatrice.mutation', { decor: 'allee', time: 'jour', cast: [{ id: 'beatrice', pos: 'centre', mood: 'sourire' }] }, [
+    ...say('beatrice', 'Comme c’est intéressant. Il faudra me dire laquelle, je connais tout le monde.'),
+  ], 's1.beatrice.fin'),
+  ...seq('s1.beatrice.vous', { decor: 'allee', time: 'jour', cast: [{ id: 'beatrice', pos: 'centre', mood: 'froid' }] }, [
+    ...say('beatrice', "Moi ? Les souvenirs, j'imagine. Et les gens qui ont besoin de moi."),
+  ], 's1.beatrice.fin'),
+  ...seq('s1.beatrice.fin', { decor: 'allee', time: 'jour', cast: [{ id: 'beatrice', pos: 'centre', mood: 'sourire' }] }, [
+    ...say('beatrice', 'Enfin ! Les Delaunay donnent un dîner ce soir, Paul et Isabelle, au 14. Vous êtes invitée : j’ai insisté.'),
+    ...say('beatrice', 'Donnez-moi votre numéro, je vous envoie tout ça.'),
     narr("Vous le lui dictez. Elle l'enregistre avec une rapidité d'experte, puis s'éloigne en agitant la main."),
-    leave('helene'),
+    leave('beatrice'),
     sms({
-      thread: 'helene',
-      contact: 'Hélène Vasseur',
+      thread: 'beatrice',
+      contact: 'Béatrice Vasseur',
       incoming: [{ text: "Dîner 20 h au 14, allée des Tilleuls. Tenue correcte mais pas guindée 😉 Isabelle déteste qu'on arrive en avance. — H." }],
       replies: [
-        { id: 'merci', text: 'Merci Hélène, à ce soir.', effects: { rel: { helene: 1 } }, next: 's1.soir' },
+        { id: 'merci', text: 'Merci Béatrice, à ce soir.', effects: { rel: { beatrice: 1 } }, next: 's1.soir' },
         { id: 'vin', text: "J'apporterai une bouteille. Rouge ?", effects: { flags: { bouteille: true } }, next: 's1.vin' },
       ],
-      dismiss: { label: 'Ne pas répondre', effects: { rel: { helene: -1 } }, next: 's1.soir' },
+      dismiss: { label: 'Ne pas répondre', effects: { rel: { beatrice: -1 } }, next: 's1.soir' },
     }),
   ]),
   ...seq('s1.vin', allee('jour'), [
     sms({
-      thread: 'helene',
-      contact: 'Hélène Vasseur',
-      incoming: [{ text: 'Rouge. Marc ne boit que du Saint-Joseph, mais il ne vous le dira jamais. Moi si 😘' }],
+      thread: 'beatrice',
+      contact: 'Béatrice Vasseur',
+      incoming: [{ text: 'Rouge. Paul ne boit que du Saint-Joseph, mais il ne vous le dira jamais. Moi si 😘' }],
       dismiss: { label: 'Ranger le téléphone' },
     }),
   ], 's1.soir'),
@@ -155,19 +155,19 @@ const nodes: Record<string, StoryNode> = {
     title('Scène 2', 'Le dîner'),
     narr('Chez les Delaunay, tout est blanc, cher et parfaitement éclairé. Une maison qui ressemble à une publicité pour une vie heureuse.'),
     enter({ id: 'isabelle', pos: 'gauche', mood: 'froid' }),
-    ...say('isabelle', '{alias}. Hélène nous a tout dit de vous. Ce qui veut dire, je suppose, qu’elle ne sait rien.'),
-    enter({ id: 'marc', pos: 'droite', mood: 'sourire' }),
-    ...say('marc', 'Isabelle. Laisse-la au moins entrer. Marc, bienvenue. Je vous sers quelque chose ?'),
+    ...say('isabelle', '{alias}. Béatrice nous a tout dit de vous. Ce qui veut dire, je suppose, qu’elle ne sait rien.'),
+    enter({ id: 'paul', pos: 'droite', mood: 'sourire' }),
+    ...say('paul', 'Isabelle. Laisse-la au moins entrer. Paul, bienvenue. Je vous sers quelque chose ?'),
     ...iff({ flag: 'bouteille' }, [
-      withFx({ rel: { marc: 1 } }, narr('Vous lui tendez la bouteille. Il lit l’étiquette et son sourire change.')),
-      ...say('marc', 'Un Saint-Joseph. Enfin quelqu’un qui a du goût dans ce lotissement.'),
-      ...say('isabelle', 'Hélène, je suppose.', 'froid'),
+      withFx({ rel: { paul: 1 } }, narr('Vous lui tendez la bouteille. Il lit l’étiquette et son sourire change.')),
+      ...say('paul', 'Un Saint-Joseph. Enfin quelqu’un qui a du goût dans ce lotissement.'),
+      ...say('isabelle', 'Béatrice, je suppose.', 'froid'),
     ]),
     memory('Sa voix vous traverse comme un courant d’air. Vous connaissez cette voix. Vous ne savez plus d’où, ni si vous l’aimiez.'),
-    narr('On attend encore Hélène. Vous avez quelques minutes pour regarder autour de vous.'),
+    narr('On attend encore Béatrice. Vous avez quelques minutes pour regarder autour de vous.'),
   ], 's2.explore'),
 
-  ...seq('s2.explore', { decor: 'salon', time: 'soir', cast: [{ id: 'isabelle', pos: 'gauche', mood: 'neutre' }, { id: 'marc', pos: 'droite', mood: 'neutre' }] }, [
+  ...seq('s2.explore', { decor: 'salon', time: 'soir', cast: [{ id: 'isabelle', pos: 'gauche', mood: 'neutre' }, { id: 'paul', pos: 'droite', mood: 'neutre' }] }, [
     explore('s2.explore', 'Le salon des Delaunay', [
       { id: 'cheminee', label: 'Le cadre sur la cheminée', at: [17, 44], icon: 'objet', next: 's2.cheminee' },
       { id: 'baie', label: 'La baie vitrée', at: [74, 40], icon: 'regarder', next: 's2.baie' },
@@ -185,58 +185,58 @@ const nodes: Record<string, StoryNode> = {
   ], 's2.explore'),
   ...seq('s2.photos', { decor: 'salon', time: 'soir', cast: [] }, [
     narr('Des photos de vacances, de remise de diplôme, de barbecue. Et une photo de groupe : la fête de la Saint-Jean, il y a dix ans.'),
-    withFx({ clues: ['saint-jean'] }, narr("Hélène, les Delaunay, Antoine en retrait… et, coupée au bord du cadre, une épaule nue et une robe verte. La vôtre. Quelqu'un vous a retirée de la photo.")),
+    withFx({ clues: ['saint-jean'] }, narr("Béatrice, les Delaunay, Antoine en retrait… et, coupée au bord du cadre, une épaule nue et une robe verte. La vôtre. Quelqu'un vous a retirée de la photo.")),
   ], 's2.explore'),
 
-  ...seq('s2.diner', { decor: 'salon', time: 'soir', cast: [{ id: 'isabelle', pos: 'gauche', mood: 'neutre' }, { id: 'helene', pos: 'centre', mood: 'sourire' }, { id: 'marc', pos: 'droite', mood: 'neutre' }] }, [
-    narr('Hélène arrive en retard, avec des excuses que personne ne croit. Le dîner avance : le syndic, les travaux, les impôts, les enfants des autres.'),
-    ...say('helene', '… et le pavillon de la piscine enfin rénové ! Dix ans qu’on en parlait.'),
-    ...say('isabelle', 'Dix ans que Marc refusait qu’on y touche.', 'froid'),
-    ...say('marc', "Parce qu'il n'y avait pas de budget."),
+  ...seq('s2.diner', { decor: 'salon', time: 'soir', cast: [{ id: 'isabelle', pos: 'gauche', mood: 'neutre' }, { id: 'beatrice', pos: 'centre', mood: 'sourire' }, { id: 'paul', pos: 'droite', mood: 'neutre' }] }, [
+    narr('Béatrice arrive en retard, avec des excuses que personne ne croit. Le dîner avance : le syndic, les travaux, les impôts, les enfants des autres.'),
+    ...say('beatrice', '… et le pavillon de la piscine enfin rénové ! Dix ans qu’on en parlait.'),
+    ...say('isabelle', 'Dix ans que Paul refusait qu’on y touche.', 'froid'),
+    ...say('paul', "Parce qu'il n'y avait pas de budget."),
     ...say('isabelle', 'Bien sûr. Et il a encore mis la date de naissance de Lou comme code sur la porte. Comme sur l’alarme, comme sur sa carte bleue. Un jour, on se fera tout voler.', undefined, { clues: ['code-lou'] }),
-    ...say('marc', 'Merci, chérie. Maintenant toute la table le sait.', 'froid'),
-    ...say('helene', 'Vous savez, {alias}… votre maison, le 9. Il y avait une femme qui vivait là, avant.', 'trouble'),
-    narr('Silence. Isabelle repose son verre. Marc regarde la nappe.'),
+    ...say('paul', 'Merci, chérie. Maintenant toute la table le sait.', 'froid'),
+    ...say('beatrice', 'Vous savez, {alias}… votre maison, le 9. Il y avait une femme qui vivait là, avant.', 'trouble'),
+    narr('Silence. Isabelle repose son verre. Paul regarde la nappe.'),
     choice('Comment réagissez-vous ?', [
       { id: 'curieuse', label: "Avant ? Qu'est-ce qui lui est arrivé ?", tone: 'franchise', next: 's2.versions' },
       { id: 'savoir', label: "L'agence ne m'a rien dit. Je préfère ne pas savoir.", tone: 'esquive', next: 's2.insiste' },
-      { id: 'pourquoi', label: 'Pourquoi me racontez-vous ça, Hélène ?', tone: 'retourner', effects: { rel: { helene: -1 } }, next: 's2.pourquoi' },
+      { id: 'pourquoi', label: 'Pourquoi me racontez-vous ça, Béatrice ?', tone: 'retourner', effects: { rel: { beatrice: -1 } }, next: 's2.pourquoi' },
     ]),
   ]),
-  ...seq('s2.insiste', { decor: 'salon', time: 'soir', cast: [{ id: 'isabelle', pos: 'gauche', mood: 'neutre' }, { id: 'helene', pos: 'centre', mood: 'trouble' }, { id: 'marc', pos: 'droite', mood: 'neutre' }] }, [
-    ...say('helene', 'Il vaut mieux que vous l’appreniez de nous que des voisins.'),
+  ...seq('s2.insiste', { decor: 'salon', time: 'soir', cast: [{ id: 'isabelle', pos: 'gauche', mood: 'neutre' }, { id: 'beatrice', pos: 'centre', mood: 'trouble' }, { id: 'paul', pos: 'droite', mood: 'neutre' }] }, [
+    ...say('beatrice', 'Il vaut mieux que vous l’appreniez de nous que des voisins.'),
   ], 's2.versions'),
-  ...seq('s2.pourquoi', { decor: 'salon', time: 'soir', cast: [{ id: 'isabelle', pos: 'gauche', mood: 'neutre' }, { id: 'helene', pos: 'centre', mood: 'froid' }, { id: 'marc', pos: 'droite', mood: 'neutre' }] }, [
-    ...say('helene', 'Parce que, tôt ou tard, quelqu’un vous le dira. Et mal.'),
+  ...seq('s2.pourquoi', { decor: 'salon', time: 'soir', cast: [{ id: 'isabelle', pos: 'gauche', mood: 'neutre' }, { id: 'beatrice', pos: 'centre', mood: 'froid' }, { id: 'paul', pos: 'droite', mood: 'neutre' }] }, [
+    ...say('beatrice', 'Parce que, tôt ou tard, quelqu’un vous le dira. Et mal.'),
   ], 's2.versions'),
-  ...seq('s2.versions', { decor: 'salon', time: 'soir', cast: [{ id: 'isabelle', pos: 'gauche', mood: 'neutre' }, { id: 'helene', pos: 'centre', mood: 'trouble' }, { id: 'marc', pos: 'droite', mood: 'neutre' }] }, [
-    ...say('helene', 'Élise. Élise Marchal. Elle est partie une nuit de juin. Elle voyait quelqu’un, un homme de l’extérieur. Elle a pris sa voiture et elle n’est jamais revenue.'),
-    ...say('marc', "Ce n'est pas ce qui s'est passé.", 'froid'),
-    ...say('marc', "On a retrouvé sa voiture dans l'étang du Moulin. Les gendarmes ont conclu à un accident. Elle s'est noyée. Elle n'est partie avec personne."),
-    ...say('helene', "On n'a jamais retrouvé le corps, Marc.", 'froid'),
+  ...seq('s2.versions', { decor: 'salon', time: 'soir', cast: [{ id: 'isabelle', pos: 'gauche', mood: 'neutre' }, { id: 'beatrice', pos: 'centre', mood: 'trouble' }, { id: 'paul', pos: 'droite', mood: 'neutre' }] }, [
+    ...say('beatrice', 'Alice. Alice Marchal. Elle est partie une nuit de juin. Elle voyait quelqu’un, un homme de l’extérieur. Elle a pris sa voiture et elle n’est jamais revenue.'),
+    ...say('paul', "Ce n'est pas ce qui s'est passé.", 'froid'),
+    ...say('paul', "On a retrouvé sa voiture dans l'étang du Moulin. Les gendarmes ont conclu à un accident. Elle s'est noyée. Elle n'est partie avec personne."),
+    ...say('beatrice', "On n'a jamais retrouvé le corps, Paul.", 'froid'),
     ...say('isabelle', 'Et voilà. Dix ans, et ils se disputent encore pour savoir qui la connaissait le mieux.', 'sourire'),
     withFx({ clues: ['deux-versions'] }, narr("Deux versions. Deux personnes qui étaient là. Et vous, au centre de l'histoire, qui ne vous souvenez de rien.")),
     choice('Qui poussez-vous à en dire plus ?', [
-      { id: 'marc', label: 'Vous avez l’air sûr de vous, Marc. Vous étiez proches ?', tone: 'franchise', effects: { rel: { marc: -1, isabelle: 1 }, flags: { pousse_marc: true }, log: 'Au dîner, vous avez mis Marc en difficulté devant sa femme.' }, next: 's2.marc' },
-      { id: 'helene', label: 'Un homme de l’extérieur ? Vous l’avez vu, Hélène ?', tone: 'retourner', effects: { rel: { helene: -1 }, flags: { pousse_helene: true }, log: 'Au dîner, vous avez demandé à Hélène des preuves de sa version.' }, next: 's2.helene' },
+      { id: 'paul', label: 'Vous avez l’air sûr de vous, Paul. Vous étiez proches ?', tone: 'franchise', effects: { rel: { paul: -1, isabelle: 1 }, flags: { pousse_paul: true }, log: 'Au dîner, vous avez mis Paul en difficulté devant sa femme.' }, next: 's2.paul' },
+      { id: 'beatrice', label: 'Un homme de l’extérieur ? Vous l’avez vu, Béatrice ?', tone: 'retourner', effects: { rel: { beatrice: -1 }, flags: { pousse_beatrice: true }, log: 'Au dîner, vous avez demandé à Béatrice des preuves de sa version.' }, next: 's2.beatrice' },
       { id: 'silence', label: 'Paix à son âme.', tone: 'esquive', effects: { rel: { isabelle: 1 } }, next: 's2.silence' },
     ]),
   ]),
-  ...seq('s2.marc', { decor: 'salon', time: 'soir', cast: [{ id: 'isabelle', pos: 'gauche', mood: 'froid' }, { id: 'helene', pos: 'centre', mood: 'neutre' }, { id: 'marc', pos: 'droite', mood: 'trouble' }] }, [
-    ...say('marc', 'Nous étions voisins.'),
-    ...say('isabelle', 'Très voisins.', 'sourire', { clues: ['marc-elise'] }),
-    narr("Marc se lève pour chercher une bouteille qui n'existe pas."),
+  ...seq('s2.paul', { decor: 'salon', time: 'soir', cast: [{ id: 'isabelle', pos: 'gauche', mood: 'froid' }, { id: 'beatrice', pos: 'centre', mood: 'neutre' }, { id: 'paul', pos: 'droite', mood: 'trouble' }] }, [
+    ...say('paul', 'Nous étions voisins.'),
+    ...say('isabelle', 'Très voisins.', 'sourire', { clues: ['paul-alice'] }),
+    narr("Paul se lève pour chercher une bouteille qui n'existe pas."),
   ], 's2.fin'),
-  ...seq('s2.helene', { decor: 'salon', time: 'soir', cast: [{ id: 'isabelle', pos: 'gauche', mood: 'neutre' }, { id: 'helene', pos: 'centre', mood: 'froid' }, { id: 'marc', pos: 'droite', mood: 'neutre' }] }, [
-    ...say('helene', 'Elle me l’avait dit. On se disait tout.'),
-    memory("Vous ne vous souvenez d'aucun homme de l'extérieur. Vous vous souvenez d'Hélène qui pleurait dans votre cuisine, une semaine avant. Ou peut-être était-ce vous qui pleuriez."),
+  ...seq('s2.beatrice', { decor: 'salon', time: 'soir', cast: [{ id: 'isabelle', pos: 'gauche', mood: 'neutre' }, { id: 'beatrice', pos: 'centre', mood: 'froid' }, { id: 'paul', pos: 'droite', mood: 'neutre' }] }, [
+    ...say('beatrice', 'Elle me l’avait dit. On se disait tout.'),
+    memory("Vous ne vous souvenez d'aucun homme de l'extérieur. Vous vous souvenez de Béatrice qui pleurait dans votre cuisine, une semaine avant. Ou peut-être était-ce vous qui pleuriez."),
   ], 's2.fin'),
-  ...seq('s2.silence', { decor: 'salon', time: 'soir', cast: [{ id: 'isabelle', pos: 'gauche', mood: 'sourire' }, { id: 'helene', pos: 'centre', mood: 'neutre' }, { id: 'marc', pos: 'droite', mood: 'neutre' }] }, [
+  ...seq('s2.silence', { decor: 'salon', time: 'soir', cast: [{ id: 'isabelle', pos: 'gauche', mood: 'sourire' }, { id: 'beatrice', pos: 'centre', mood: 'neutre' }, { id: 'paul', pos: 'droite', mood: 'neutre' }] }, [
     ...say('isabelle', 'Enfin quelqu’un de bien élevé à cette table.'),
   ], 's2.fin'),
-  ...seq('s2.fin', { decor: 'salon', time: 'nuit', cast: [{ id: 'marc', pos: 'centre', mood: 'trouble' }] }, [
-    narr('La soirée se termine sur des politesses. Sur le pas de la porte, Marc vous retient une seconde.'),
-    ...say('marc', 'Faites attention à vous. Les gens d’ici adorent les histoires.'),
+  ...seq('s2.fin', { decor: 'salon', time: 'nuit', cast: [{ id: 'paul', pos: 'centre', mood: 'trouble' }] }, [
+    narr('La soirée se termine sur des politesses. Sur le pas de la porte, Paul vous retient une seconde.'),
+    ...say('paul', 'Faites attention à vous. Les gens d’ici adorent les histoires.'),
   ], 's3'),
 
   // ─────────────────────────────── Scène 3 — Le message
@@ -268,7 +268,7 @@ const nodes: Record<string, StoryNode> = {
   ...seq('s3.photo', { ...allee('nuit'), photo: 'pavillon-2347' }, [
     narr('Vous agrandissez la photo. Le pavillon de la piscine, la nuit. Devant, une petite voiture rouge.'),
     narr('Votre voiture. Celle que les gendarmes ont sortie de l’étang.'),
-    withFx({ clues: ['photo-2347'] }, narr("L'horodatage indique 23 h 47. Selon Hélène, vous étiez partie à 22 h. Selon Marc, vous vous êtes noyée à six kilomètres d'ici. Sur la photo, vous êtes encore là.")),
+    withFx({ clues: ['photo-2347'] }, narr("L'horodatage indique 23 h 47. Selon Béatrice, vous étiez partie à 22 h. Selon Paul, vous vous êtes noyée à six kilomètres d'ici. Sur la photo, vous êtes encore là.")),
     narr('Derrière la vitre du pavillon, une silhouette. Impossible de dire qui.'),
     stage({ photo: undefined }),
     memory("De l'eau froide. Une lumière bleue. Le pavillon."),
@@ -281,7 +281,7 @@ const nodes: Record<string, StoryNode> = {
     narr('Le jardin commun est désert. La piscine éclaire le pavillon par en dessous, comme une scène de théâtre vide.'),
     narr('La porte est verrouillée. À côté de la poignée, un boîtier à code tout neuf. Quatre chiffres.'),
     keypad('Entrez le code du pavillon', '1403', [
-      { after: 2, text: 'Au dîner, Isabelle se plaignait : Marc met toujours la même date sur tous ses codes.' },
+      { after: 2, text: 'Au dîner, Isabelle se plaignait : Paul met toujours la même date sur tous ses codes.' },
       { after: 4, text: 'La date de naissance de Lou : sur le faire-part de la cheminée, « née le 14 mars 2009 ». Jour, puis mois.' },
       { after: 6, text: 'Le code est 1403.' },
     ]),
@@ -297,12 +297,12 @@ const nodes: Record<string, StoryNode> = {
   ]),
   ...seq('s4.registre', pavillon('interieur'), [
     narr('Un vieux cahier à spirale : le registre des clés de la piscine. Vous remontez les pages jusqu’en juin 2016.'),
-    withFx({ clues: ['registre'] }, narr('Le 21 juin : « Clé rendue — 23 h 30 — M.D. ». Et juste en dessous, d’une autre écriture : « 00 h 40 — A.R. »')),
-    narr('M.D. : Marc Delaunay. A.R. : Antoine Roche. Deux hommes au pavillon, la nuit où vous êtes morte.'),
+    withFx({ clues: ['registre'] }, narr('Le 21 juin : « Clé rendue — 23 h 30 — P.D. ». Et juste en dessous, d’une autre écriture : « 00 h 40 — A.R. »')),
+    narr('P.D. : Paul Delaunay. A.R. : Antoine Roche. Deux hommes au pavillon, la nuit où vous êtes morte.'),
   ], 's4.explore'),
   ...seq('s4.local', pavillon('interieur'), [
     narr('Derrière la pompe de filtration, une boîte en fer. Dans la boîte, dans un sachet de congélation : un téléphone à la coque turquoise, fendue.'),
-    withFx({ clues: ['telephone-elise'], flags: { a_le_telephone: true }, log: "Vous avez trouvé l'ancien téléphone d'Élise." }, narr("Votre téléphone. Celui d'Élise. Quelqu'un l'a gardé pendant dix ans.")),
+    withFx({ clues: ['telephone-alice'], flags: { a_le_telephone: true }, log: "Vous avez trouvé l'ancien téléphone d'Alice." }, narr("Votre téléphone. Celui d'Alice. Quelqu'un l'a gardé pendant dix ans.")),
     narr('Dehors, des pas sur le gravier. Le faisceau d’une lampe torche balaie la vitre.'),
     qte({
       prompt: 'Quelqu’un approche !',
@@ -341,7 +341,7 @@ const nodes: Record<string, StoryNode> = {
     narr("Quelqu'un l'a caché au lieu de le jeter. Pour se protéger, ou pour garder une preuve contre quelqu'un d'autre."),
     narr('Si vous agissez trop tôt, vous perdez votre couverture. Si vous attendez, celui qui l’a caché finira par s’apercevoir qu’il a disparu.'),
     choice('Que faites-vous de la preuve ?', [
-      { id: 'confronter', label: 'Aller chez Marc, maintenant. Lui mettre le téléphone sous les yeux.', tone: 'action', effects: { ending: 'confrontation', log: 'Vous avez confronté Marc avec le téléphone.' }, next: 'a' },
+      { id: 'confronter', label: 'Aller chez Paul, maintenant. Lui mettre le téléphone sous les yeux.', tone: 'action', effects: { ending: 'confrontation', log: 'Vous avez confronté Paul avec le téléphone.' }, next: 'a' },
       { id: 'cacher', label: 'Le cacher et ne rien dire. Observer qui panique.', tone: 'esquive', effects: { ending: 'silence', log: 'Vous avez caché la preuve.' }, next: 'b' },
       { id: 'antoine', label: 'Le confier à Antoine. Il était là cette nuit-là, et il a les clés.', tone: 'franchise', effects: { ending: 'alliance', flags: { antoine_a_le_telephone: true }, log: 'Vous avez confié le téléphone à Antoine.' }, next: 'c' },
     ]),
@@ -349,46 +349,46 @@ const nodes: Record<string, StoryNode> = {
 
   // Variante A — la confrontation
   ...seq('a', salon('nuit'), [
-    narr('Il est une heure du matin quand Marc ouvre la porte, en peignoir, le visage gris.'),
-    enter({ id: 'marc', pos: 'centre', mood: 'trouble' }),
-    ...say('marc', '{alias} ? Qu’est-ce que…'),
+    narr('Il est une heure du matin quand Paul ouvre la porte, en peignoir, le visage gris.'),
+    enter({ id: 'paul', pos: 'centre', mood: 'trouble' }),
+    ...say('paul', '{alias} ? Qu’est-ce que…'),
     narr('Vous posez le sachet sur le marbre de l’entrée. Il le reconnaît immédiatement. Ça se voit.'),
-    ...say('marc', 'Où avez-vous trouvé ça ?'),
+    ...say('paul', 'Où avez-vous trouvé ça ?'),
     choice('Que répondez-vous ?', [
       { id: 'cache', label: "Là où vous l'avez caché.", tone: 'franchise', next: 'a.cache' },
-      { id: 'envoye', label: "Quelqu'un me l'a envoyé. Il sait ce que vous avez fait.", tone: 'mensonge', effects: { flags: { menti_marc: true } }, next: 'a.envoye' },
+      { id: 'envoye', label: "Quelqu'un me l'a envoyé. Il sait ce que vous avez fait.", tone: 'mensonge', effects: { flags: { menti_paul: true } }, next: 'a.envoye' },
     ]),
   ]),
-  ...seq('a.cache', { decor: 'salon', time: 'nuit', cast: [{ id: 'marc', pos: 'centre', mood: 'froid' }] }, [
-    ...say('marc', "Je ne l'ai pas caché. Je l'ai gardé. Ce n'est pas pareil."),
+  ...seq('a.cache', { decor: 'salon', time: 'nuit', cast: [{ id: 'paul', pos: 'centre', mood: 'froid' }] }, [
+    ...say('paul', "Je ne l'ai pas caché. Je l'ai gardé. Ce n'est pas pareil."),
   ], 'a.aveu'),
-  ...seq('a.envoye', { decor: 'salon', time: 'nuit', cast: [{ id: 'marc', pos: 'centre', mood: 'trouble' }] }, [
-    ...say('marc', "Ce que j'ai fait ? Je n'ai rien fait ! Je…"),
+  ...seq('a.envoye', { decor: 'salon', time: 'nuit', cast: [{ id: 'paul', pos: 'centre', mood: 'trouble' }] }, [
+    ...say('paul', "Ce que j'ai fait ? Je n'ai rien fait ! Je…"),
   ], 'a.aveu'),
-  ...seq('a.aveu', { decor: 'salon', time: 'nuit', cast: [{ id: 'marc', pos: 'centre', mood: 'trouble' }] }, [
-    ...say('marc', 'Elle est venue au pavillon, ce soir-là. On… on se voyait. Elle voulait tout dire à Isabelle. On s’est disputés.'),
-    ...say('marc', 'Je suis parti à onze heures et demie. Elle était vivante. Je vous le jure.'),
-    ...iff({ clue: 'registre' }, narr('« Clé rendue — 23 h 30 — M.D. » Le registre lui donne raison. Sur ce point, au moins.')),
-    ...say('marc', "Le lendemain, j'ai trouvé son téléphone au bord du bassin. Sa voiture n'était plus là. Et quand on l'a sortie de l'étang… j'ai eu peur. Il y avait quarante appels de moi là-dedans."),
+  ...seq('a.aveu', { decor: 'salon', time: 'nuit', cast: [{ id: 'paul', pos: 'centre', mood: 'trouble' }] }, [
+    ...say('paul', 'Elle est venue au pavillon, ce soir-là. On… on se voyait. Elle voulait tout dire à Isabelle. On s’est disputés.'),
+    ...say('paul', 'Je suis parti à onze heures et demie. Elle était vivante. Je vous le jure.'),
+    ...iff({ clue: 'registre' }, narr('« Clé rendue — 23 h 30 — P.D. » Le registre lui donne raison. Sur ce point, au moins.')),
+    ...say('paul', "Le lendemain, j'ai trouvé son téléphone au bord du bassin. Sa voiture n'était plus là. Et quand on l'a sortie de l'étang… j'ai eu peur. Il y avait quarante appels de moi là-dedans."),
     enter({ id: 'isabelle', pos: 'gauche', mood: 'froid' }),
-    ...say('isabelle', 'Marc ? Qui est-ce ?'),
+    ...say('isabelle', 'Paul ? Qui est-ce ?'),
     narr('Isabelle, en haut de l’escalier. Depuis combien de temps écoute-t-elle ?'),
     choice('Que dites-vous ?', [
-      { id: 'proteger', label: "Personne. Une voisine qui s'est trompée de porte.", tone: 'mensonge', effects: { rel: { marc: 2, isabelle: -1 }, flags: { protege_marc: true }, log: 'Vous avez couvert Marc devant Isabelle. Il vous doit quelque chose.' }, next: 'a.proteger' },
-      { id: 'exposer', label: 'Demandez donc à votre mari.', tone: 'retourner', effects: { rel: { marc: -2, isabelle: 1 }, exposure: 1, flags: { expose_marc: true }, log: 'Vous avez exposé Marc devant Isabelle.' }, next: 'a.exposer' },
+      { id: 'proteger', label: "Personne. Une voisine qui s'est trompée de porte.", tone: 'mensonge', effects: { rel: { paul: 2, isabelle: -1 }, flags: { protege_paul: true }, log: 'Vous avez couvert Paul devant Isabelle. Il vous doit quelque chose.' }, next: 'a.proteger' },
+      { id: 'exposer', label: 'Demandez donc à votre mari.', tone: 'retourner', effects: { rel: { paul: -2, isabelle: 1 }, exposure: 1, flags: { expose_paul: true }, log: 'Vous avez exposé Paul devant Isabelle.' }, next: 'a.exposer' },
     ]),
   ]),
-  ...seq('a.proteger', { decor: 'salon', time: 'nuit', cast: [{ id: 'isabelle', pos: 'gauche', mood: 'froid' }, { id: 'marc', pos: 'droite', mood: 'trouble' }] }, [
+  ...seq('a.proteger', { decor: 'salon', time: 'nuit', cast: [{ id: 'isabelle', pos: 'gauche', mood: 'froid' }, { id: 'paul', pos: 'droite', mood: 'trouble' }] }, [
     ...say('isabelle', 'À une heure du matin. Bien sûr.'),
-    narr('Marc ne dit rien. Mais quand vous repartez, il vous adresse un regard que vous connaissez : celui de quelqu’un qui a une dette.'),
+    narr('Paul ne dit rien. Mais quand vous repartez, il vous adresse un regard que vous connaissez : celui de quelqu’un qui a une dette.'),
   ], 'a.fin'),
-  ...seq('a.exposer', { decor: 'salon', time: 'nuit', cast: [{ id: 'isabelle', pos: 'gauche', mood: 'sourire' }, { id: 'marc', pos: 'droite', mood: 'trouble' }] }, [
+  ...seq('a.exposer', { decor: 'salon', time: 'nuit', cast: [{ id: 'isabelle', pos: 'gauche', mood: 'sourire' }, { id: 'paul', pos: 'droite', mood: 'trouble' }] }, [
     ...say('isabelle', "Oh, je n'ai pas besoin de lui demander. Je le sais depuis dix ans."),
-    narr('Elle dit ça calmement, sans quitter Marc des yeux. Puis elle remonte. Marc reste au milieu de l’entrée, les bras ballants.'),
+    narr('Elle dit ça calmement, sans quitter Paul des yeux. Puis elle remonte. Paul reste au milieu de l’entrée, les bras ballants.'),
   ], 'a.fin'),
   ...seq('a.fin', allee('nuit'), [
     withFx({ exposure: 1 }, narr('Vous repartez avec le téléphone. Derrière vous, la porte des Delaunay se referme sur une dispute qui attend depuis dix ans.')),
-    narr('Marc sait maintenant que vous cherchez. Bientôt, il voudra savoir pourquoi.'),
+    narr('Paul sait maintenant que vous cherchez. Bientôt, il voudra savoir pourquoi.'),
   ], 'cliff'),
 
   // Variante B — le silence
@@ -396,30 +396,30 @@ const nodes: Record<string, StoryNode> = {
     narr('Vous glissez le téléphone au fond d’un carton marqué « Livres », sous trois romans que vous n’avez jamais lus. Puis vous attendez le matin.'),
     stage({ time: 'jour' }),
     narr('À huit heures, quelqu’un frappe.'),
-    enter({ id: 'helene', pos: 'centre', mood: 'sourire' }),
-    ...say('helene', 'Croissants ! J’ai pensé qu’après le dîner d’hier, vous auriez besoin de reprendre des forces.'),
-    narr('Hélène ne regarde pas la cuisine. Elle regarde les cartons.'),
-    ...say('helene', 'Vous êtes sortie, cette nuit ? Antoine dit avoir vu de la lumière au pavillon.', 'neutre'),
+    enter({ id: 'beatrice', pos: 'centre', mood: 'sourire' }),
+    ...say('beatrice', 'Croissants ! J’ai pensé qu’après le dîner d’hier, vous auriez besoin de reprendre des forces.'),
+    narr('Béatrice ne regarde pas la cuisine. Elle regarde les cartons.'),
+    ...say('beatrice', 'Vous êtes sortie, cette nuit ? Antoine dit avoir vu de la lumière au pavillon.', 'neutre'),
     ...iff({ flag: 'surprise_par_antoine' }, narr('Antoine lui a donc parlé. Évidemment qu’il lui a parlé.')),
     choice('Que répondez-vous ?', [
-      { id: 'dormais', label: "Je dormais. J'ai pris un somnifère.", tone: 'mensonge', effects: { flags: { menti_helene: true } }, next: 'b.dormais' },
-      { id: 'antoine', label: 'Antoine vous raconte tout ce qu’il voit ?', tone: 'retourner', effects: { rel: { helene: -1 }, clues: ['antoine-helene'] }, next: 'b.antoine' },
-      { id: 'promenade', label: "Je suis allée marcher. J'avais besoin d'air.", tone: 'franchise', effects: { rel: { helene: 1 } }, next: 'b.promenade' },
+      { id: 'dormais', label: "Je dormais. J'ai pris un somnifère.", tone: 'mensonge', effects: { flags: { menti_beatrice: true } }, next: 'b.dormais' },
+      { id: 'antoine', label: 'Antoine vous raconte tout ce qu’il voit ?', tone: 'retourner', effects: { rel: { beatrice: -1 }, clues: ['antoine-beatrice'] }, next: 'b.antoine' },
+      { id: 'promenade', label: "Je suis allée marcher. J'avais besoin d'air.", tone: 'franchise', effects: { rel: { beatrice: 1 } }, next: 'b.promenade' },
     ]),
   ]),
-  ...seq('b.dormais', { decor: 'allee', time: 'jour', cast: [{ id: 'helene', pos: 'centre', mood: 'sourire' }] }, [
-    ...say('helene', 'Tant mieux. Les nuits sont longues, ici.'),
+  ...seq('b.dormais', { decor: 'allee', time: 'jour', cast: [{ id: 'beatrice', pos: 'centre', mood: 'sourire' }] }, [
+    ...say('beatrice', 'Tant mieux. Les nuits sont longues, ici.'),
     ...iff({ flag: 'surprise_par_antoine' }, withFx({ exposure: 1 }, narr('Son sourire ne bouge pas, mais quelque chose se ferme derrière. Elle sait que vous mentez.'))),
   ], 'b.fin'),
-  ...seq('b.antoine', { decor: 'allee', time: 'jour', cast: [{ id: 'helene', pos: 'centre', mood: 'froid' }] }, [
-    ...say('helene', 'Antoine me doit beaucoup. Tout le monde, ici, me doit un peu quelque chose.'),
+  ...seq('b.antoine', { decor: 'allee', time: 'jour', cast: [{ id: 'beatrice', pos: 'centre', mood: 'froid' }] }, [
+    ...say('beatrice', 'Antoine me doit beaucoup. Tout le monde, ici, me doit un peu quelque chose.'),
   ], 'b.fin'),
-  ...seq('b.promenade', { decor: 'allee', time: 'jour', cast: [{ id: 'helene', pos: 'centre', mood: 'trouble' }] }, [
-    ...say('helene', 'Prenez garde. Le jardin commun est mal éclairé. Il y a eu… des accidents.'),
+  ...seq('b.promenade', { decor: 'allee', time: 'jour', cast: [{ id: 'beatrice', pos: 'centre', mood: 'trouble' }] }, [
+    ...say('beatrice', 'Prenez garde. Le jardin commun est mal éclairé. Il y a eu… des accidents.'),
   ], 'b.fin'),
-  ...seq('b.fin', { decor: 'allee', time: 'jour', cast: [{ id: 'helene', pos: 'centre', mood: 'sourire' }] }, [
-    ...say('helene', 'Ah, et {alias}… Elle aussi, elle avait cette manie de garder ses cartons fermés.'),
-    leave('helene'),
+  ...seq('b.fin', { decor: 'allee', time: 'jour', cast: [{ id: 'beatrice', pos: 'centre', mood: 'sourire' }] }, [
+    ...say('beatrice', 'Ah, et {alias}… Elle aussi, elle avait cette manie de garder ses cartons fermés.'),
+    leave('beatrice'),
     narr('Elle s’en va. Vous restez longtemps immobile.'),
     narr("Personne ne sait que vous avez le téléphone. Pour l'instant, c'est votre seul avantage."),
   ], 'cliff'),
@@ -460,8 +460,8 @@ const nodes: Record<string, StoryNode> = {
       incoming: [
         { text: 'Vous avez trouvé mon cadeau.', when: { not: { flag: 'antoine_a_le_telephone' } } },
         { text: 'Vous ne devriez pas faire confiance au jardinier.', when: { flag: 'antoine_a_le_telephone' } },
-        { text: 'Isabelle vous remercie. Moi aussi.', when: { flag: 'expose_marc' } },
-        { text: 'Bon retour à Bellécourt, Élise.' },
+        { text: 'Isabelle vous remercie. Moi aussi.', when: { flag: 'expose_paul' } },
+        { text: 'Bon retour à Bellécourt, Alice.' },
       ],
       dismiss: { label: 'Poser le téléphone' },
     }),
@@ -478,24 +478,24 @@ export const episode1: Story = {
   start: 'prologue',
   nodes,
   characters: {
-    helene: { name: 'Hélène Vasseur', role: 'Voisine du 11, présidente de l’association syndicale' },
-    marc: { name: 'Marc Delaunay', role: 'Propriétaire du 14' },
-    isabelle: { name: 'Isabelle Delaunay', role: 'Épouse de Marc' },
+    beatrice: { name: 'Béatrice Vasseur', role: 'Voisine du 11, présidente de l’association syndicale' },
+    paul: { name: 'Paul Delaunay', role: 'Propriétaire du 14' },
+    isabelle: { name: 'Isabelle Delaunay', role: 'Épouse de Paul' },
     antoine: { name: 'Antoine Roche', role: 'Gardien et jardinier du domaine' },
   },
   clues: {
     'antoine-regard': { id: 'antoine-regard', title: 'Le regard d’Antoine', text: 'Le jardinier a cru reconnaître quelqu’un en vous voyant.' },
     'faire-part': { id: 'faire-part', title: 'Faire-part de Lou', text: '« Lou Delaunay — née le 14 mars 2009 », encadré sur la cheminée des Delaunay.' },
     'lumiere-bleue': { id: 'lumiere-bleue', title: 'La lumière bleue', text: 'Le pavillon de la piscine, vu depuis le salon, réveille un fragment de souvenir. Un souvenir n’est pas une preuve.' },
-    'saint-jean': { id: 'saint-jean', title: 'La photo de la Saint-Jean', text: 'Sur la photo de groupe d’il y a dix ans, Élise a été coupée du cadre.' },
-    'code-lou': { id: 'code-lou', title: 'Les codes de Marc', text: 'Selon Isabelle, Marc utilise la date de naissance de Lou pour tous ses codes, y compris celui du pavillon.' },
-    'deux-versions': { id: 'deux-versions', title: 'Deux versions', text: 'Hélène : Élise est partie avec un homme. Marc : Élise s’est noyée dans l’étang du Moulin. Le corps n’a jamais été retrouvé.' },
-    'marc-elise': { id: 'marc-elise', title: '« Très voisins »', text: 'Isabelle laisse entendre que Marc et Élise avaient une liaison.' },
-    'photo-2347': { id: 'photo-2347', title: 'La photo de 23 h 47', text: 'La voiture d’Élise devant le pavillon à 23 h 47, alors qu’elle est censée être partie à 22 h.' },
-    registre: { id: 'registre', title: 'Le registre des clés', text: '21 juin : « Clé rendue — 23 h 30 — M.D. », puis « 00 h 40 — A.R. ».' },
-    'telephone-elise': { id: 'telephone-elise', title: 'Le téléphone d’Élise', text: 'Caché dans le local technique du pavillon depuis dix ans. Carte SIM intacte.' },
+    'saint-jean': { id: 'saint-jean', title: 'La photo de la Saint-Jean', text: 'Sur la photo de groupe d’il y a dix ans, Alice a été coupée du cadre.' },
+    'code-lou': { id: 'code-lou', title: 'Les codes de Paul', text: 'Selon Isabelle, Paul utilise la date de naissance de Lou pour tous ses codes, y compris celui du pavillon.' },
+    'deux-versions': { id: 'deux-versions', title: 'Deux versions', text: 'Béatrice : Alice est partie avec un homme. Paul : Alice s’est noyée dans l’étang du Moulin. Le corps n’a jamais été retrouvé.' },
+    'paul-alice': { id: 'paul-alice', title: '« Très voisins »', text: 'Isabelle laisse entendre que Paul et Alice avaient une liaison.' },
+    'photo-2347': { id: 'photo-2347', title: 'La photo de 23 h 47', text: 'La voiture d’Alice devant le pavillon à 23 h 47, alors qu’elle est censée être partie à 22 h.' },
+    registre: { id: 'registre', title: 'Le registre des clés', text: '21 juin : « Clé rendue — 23 h 30 — P.D. », puis « 00 h 40 — A.R. ».' },
+    'telephone-alice': { id: 'telephone-alice', title: 'Le téléphone d’Alice', text: 'Caché dans le local technique du pavillon depuis dix ans. Carte SIM intacte.' },
     'veste-verte': { id: 'veste-verte', title: 'La veste verte', text: 'Antoine faisait une ronde au pavillon, la nuit où vous y êtes entrée.' },
-    'antoine-helene': { id: 'antoine-helene', title: 'Antoine et Hélène', text: '« Antoine me doit beaucoup », dit Hélène.' },
+    'antoine-beatrice': { id: 'antoine-beatrice', title: 'Antoine et Béatrice', text: '« Antoine me doit beaucoup », dit Béatrice.' },
   },
   photos: {
     'pavillon-2347': { title: 'Photo reçue', caption: 'Pavillon de la piscine — 21.06.2016 — 23:47' },

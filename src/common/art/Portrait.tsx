@@ -20,7 +20,7 @@ const HEAD_F = 'M120 240 C120 168 160 140 200 140 C 242 140 280 168 280 240 C 28
 const HEAD_M = 'M116 236 C116 166 158 136 200 136 C 244 136 284 166 284 236 C 284 296 264 338 232 354 C 214 362 186 362 168 354 C 136 338 116 296 116 236 Z';
 
 const LOOKS: Record<CharId, Look> = {
-  helene: {
+  beatrice: {
     skin: '#EDCDB4',
     skinShade: '#D9AE93',
     hair: '#D8BC88',
@@ -47,7 +47,7 @@ const LOOKS: Record<CharId, Look> = {
       </>
     ),
   },
-  marc: {
+  paul: {
     skin: '#DDB394',
     skinShade: '#C49677',
     hair: '#8C8A86',
