@@ -69,7 +69,7 @@ const LOOKS: Record<CharId, Look> = {
       <path d="M140 300 C 150 336 176 356 200 356 C 224 356 250 336 260 300 C 250 320 228 332 200 332 C 172 332 150 320 140 300 Z" fill={l.hairShade} opacity="0.28" />
     ),
   },
-  isabelle: {
+  monica: {
     skin: '#F1D5C3',
     skinShade: '#DDB5A0',
     hair: '#1E1A1D',
@@ -87,7 +87,7 @@ const LOOKS: Record<CharId, Look> = {
       </>
     ),
   },
-  antoine: {
+  alban: {
     skin: '#C99A7A',
     skinShade: '#AD7F61',
     hair: '#BDBDB8',

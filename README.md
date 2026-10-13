@@ -80,11 +80,11 @@ tests/                  graphe narratif, chemins, digicode, QTE, serveur
 La bible laisse plusieurs décisions ouvertes (section 13). Pour rendre l'épisode jouable, le prototype tranche provisoirement les points suivants. Tout se modifie dans `shared/story/episode1.ts`.
 
 - **L'héroïne** est Alice Marchal, ancienne habitante du n°9. Elle était la meilleure amie de Béatrice et l'amante de Paul.
-- **Pourquoi personne ne la reconnaît** : sept opérations de reconstruction, dix ans de plus, et une voix abîmée par l'intubation. Antoine a pourtant un doute dès la première scène. Cette exposition est un risque que le jeu suit.
+- **Pourquoi personne ne la reconnaît** : sept opérations de reconstruction, dix ans de plus, et une voix abîmée par l'intubation. Alban a pourtant un doute dès la première scène. Cette exposition est un risque que le jeu suit.
 - **La fausse identité** : le nom d'une femme décédée, avec des papiers achetés. Le joueur choisit le nom au début.
 - **Le 21 juin 2016** : Béatrice affirme qu'Alice est partie avec un homme ; Paul, qu'elle s'est noyée dans l'étang du Moulin. La photo de 23 h 47, le registre des clés (« P.D. 23 h 30 », « A.R. 00 h 40 ») et le téléphone caché contredisent les deux versions sans désigner de coupable. **L'épisode 1 ne répond pas à la question « qui l'a laissée pour morte ? »**
-- **Le digicode** (1403) se déduit de deux indices du dîner : Isabelle dit que Paul utilise la date de naissance de Lou pour tous ses codes, et le faire-part sur la cheminée indique « née le 14 mars ».
-- **Les trois conclusions** : *La confrontation* (montrer le téléphone à Paul), *Le silence* (cacher la preuve) et *L'alliance* (la confier à Antoine). Le cliffhanger commun (« Bon retour à Bellécourt, Alice. ») varie selon les choix.
+- **Le digicode** (1403) se déduit de deux indices du dîner : Monica dit que Paul utilise la date de naissance de Lou pour tous ses codes, et le faire-part sur la cheminée indique « née le 14 mars ».
+- **Les trois conclusions** : *La confrontation* (montrer le téléphone à Paul), *Le silence* (cacher la preuve) et *L'alliance* (la confier à Alban). Le cliffhanger commun (« Bon retour à Bellécourt, Alice. ») varie selon les choix.
 
 ## Art
 

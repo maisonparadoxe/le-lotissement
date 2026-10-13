@@ -83,7 +83,7 @@ export function initialState(story: Story, now: number, settings = { extendedTim
     enteredAt: now,
     alias: 'Claire Ferrand',
     flags: {},
-    rel: { beatrice: 0, paul: 0, isabelle: 0, antoine: 0 },
+    rel: { beatrice: 0, paul: 0, monica: 0, alban: 0 },
     exposure: 0,
     clues: [],
     visited: [],

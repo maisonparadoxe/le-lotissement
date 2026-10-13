@@ -1,7 +1,7 @@
 // Modèle de données de la narration : scènes et embranchements sont décrits
 // comme des données, indépendamment de l'interface (écran ou téléphone).
 
-export type CharId = 'beatrice' | 'paul' | 'isabelle' | 'antoine';
+export type CharId = 'beatrice' | 'paul' | 'monica' | 'alban';
 export type DecorId = 'allee' | 'salon' | 'pavillon';
 export type TimeOfDay = 'jour' | 'soir' | 'nuit' | 'interieur';
 export type Mood = 'neutre' | 'sourire' | 'froid' | 'trouble';
