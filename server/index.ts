@@ -5,11 +5,12 @@
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { networkInterfaces } from 'node:os';
-import { extname, join, normalize, resolve } from 'node:path';
+import { extname, join, resolve } from 'node:path';
 import { WebSocketServer, type WebSocket } from 'ws';
 import type { Input } from '../shared/engine.ts';
 import type { ClientMsg } from '../shared/protocol.ts';
 import { PlaytestLog, RateLimiter, safeEqual, send, Session } from './sessions.ts';
+import { isHashedAsset, resolveStaticPath } from './static.ts';
 
 const PORT = Number(process.env.PORT ?? 3000);
 const PROD = process.env.NODE_ENV === 'production' || process.argv.includes('--prod');
@@ -46,21 +47,19 @@ const MIME: Record<string, string> = {
 function serveStatic(req: IncomingMessage, res: ServerResponse): void {
   const dist = join(ROOT, 'dist');
   const url = new URL(req.url ?? '/', 'http://x');
-  let path = normalize(decodeURIComponent(url.pathname)).replace(/^(\.\.[/\\])+/, '');
-  if (path === '/' || path === '') path = '/index.html';
-  const file = join(dist, path);
   if (!existsSync(join(dist, 'index.html'))) {
     res
       .writeHead(503, { 'Content-Type': 'text/plain; charset=utf-8' })
       .end('Le jeu n’est pas encore construit. Arrêtez le serveur (Ctrl+C), puis lancez « npm start » (ou « npm run build » avant).');
     return;
   }
-  if (!file.startsWith(dist) || !existsSync(file) || !statSync(file).isFile()) {
+  const file = resolveStaticPath(dist, url.pathname);
+  if (!file || !existsSync(file) || !statSync(file).isFile()) {
     res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }).end('Page introuvable');
     return;
   }
   const headers: Record<string, string> = { 'Content-Type': MIME[extname(file)] ?? 'application/octet-stream' };
-  if (path.startsWith('/assets/')) headers['Cache-Control'] = 'public, max-age=31536000, immutable';
+  if (isHashedAsset(url.pathname)) headers['Cache-Control'] = 'public, max-age=31536000, immutable';
   res.writeHead(200, headers);
   createReadStream(file).pipe(res);
 }
