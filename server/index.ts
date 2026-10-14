@@ -12,7 +12,7 @@ import type { ClientMsg } from '../shared/protocol.ts';
 import { PlaytestLog, RateLimiter, safeEqual, send, Session } from './sessions.ts';
 
 const PORT = Number(process.env.PORT ?? 3000);
-const PROD = process.env.NODE_ENV === 'production';
+const PROD = process.env.NODE_ENV === 'production' || process.argv.includes('--prod');
 const ROOT = resolve(import.meta.dirname, '..');
 const log = process.env.PLAYTEST_LOG === '1' ? new PlaytestLog() : null;
 

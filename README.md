@@ -21,7 +21,7 @@ npm start          # http://localhost:3000
 Pour développer : `npm run dev` (Vite en middleware, rechargement à chaud).
 Pour lancer les tests : `npm test`. Pour vérifier les types : `npm run typecheck`.
 
-Pour changer de port : `PORT=8080 npm start`.
+Pour changer de port : `PORT=8080 npm start` (macOS, Linux) ou, sous Windows PowerShell, `$env:PORT=8080; npm start`.
 Pour journaliser les parties de test (section 11) : `PLAYTEST_LOG=1 npm start`. Chaque nœud atteint est ajouté à `logs/playtests.jsonl`, avec la session, l'horodatage et la fin obtenue. Ce journal ne contient aucune donnée personnelle.
 
 > Pour jouer hors du réseau local, il faut déployer le serveur derrière HTTPS (n'importe quel hébergeur Node), ou passer par un tunnel. Le QR code utilise alors automatiquement l'adresse publique.

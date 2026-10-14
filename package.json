@@ -5,9 +5,9 @@
   "type": "module",
   "description": "Le Lotissement — jeu narratif interactif, navigateur + téléphone manette contextuelle",
   "scripts": {
-    "dev": "tsx watch --ignore 'src/**' server/index.ts",
+    "dev": "tsx server/index.ts",
     "build": "tsc --noEmit && vite build",
-    "start": "NODE_ENV=production tsx server/index.ts",
+    "start": "tsx server/index.ts --prod",
     "typecheck": "tsc --noEmit",
     "test": "tsx --test tests/*.test.ts"
   },
