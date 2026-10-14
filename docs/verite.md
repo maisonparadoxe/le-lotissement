@@ -26,6 +26,9 @@ Responsabilité collective, en chaîne. Personne n'a voulu tuer Alice : chacun a
 Alice s'est réveillée du coma il y a environ un an, puis a passé des mois en rééducation et en opérations. Elle revient parce qu'elle a reçu un SMS anonyme sur son ancien numéro (resté actif sans qu'elle le sache), avec la photo de 23 h 47. Quelqu'un dans le lotissement sait qu'elle est vivante, ou veut qu'on s'intéresse à cette nuit-là. Elle prépare son retour pendant des mois, avec de faux papiers, parce qu'elle sait qu'on lui veut peut-être du mal.
 À répercuter dans l'épisode 1 : le prologue doit mentionner ce premier message ; les SMS de la scène 3 sont la suite d'un contact déjà établi.
 
+## L'expéditrice des SMS anonymes : Lou
+Lou Delaunay, 7 ans cette nuit-là, 17 ans aujourd'hui, en internat à Lyon. Elle a pris la photo de 23 h 47 et envoie les SMS anonymes. Elle veut comprendre ce qui a brisé son foyer. Elle « déteste cette maison ». Le joueur croit à un règlement de comptes entre adultes ; la révélation change la lecture de la série et donne un enjeu émotionnel aux quatre fins (Lou est innocente, fille de deux coupables).
+
 ## Questions encore ouvertes
-- Qui est l'expéditeur des SMS anonymes (mystère de la saison) ?
-- Que sait Lou, qui avait 7 ans cette nuit-là ?
+- Que sait exactement Lou, et comment se trouvait-elle au pavillon à 23 h 47 (elle a suivi sa mère ? elle s'est réveillée ?) ? A-t-elle vu Monica pousser Alice ?
+- Comment Lou a-t-elle obtenu l'ancien numéro d'Alice et la photo après dix ans ?
