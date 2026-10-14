@@ -37,7 +37,7 @@ const nodes: Record<string, StoryNode> = {
     memory("De la nuit du 21 juin, il ne reste que des éclats. De l'eau froide. Une lumière bleue. Une voix qui disait : « Laisse-la. »"),
     narr("Pour tout le monde, Alice Marchal s'est noyée dans l'étang du Moulin. On n'a jamais retrouvé le corps."),
     narr("Sur le bail de la maison n°9, l'agence a inscrit un autre nom."),
-    input('Quel nom porte votre nouvelle identité ?', ['Claire Ferrand', 'Nora Vidal', 'Juliette Armand']),
+    input('Quel nom porte votre nouvelle identité ?', ['Natasha Lusky', 'Nora Vidal', 'Juliette Armand']),
     narr("{alias}. Traductrice, quarante et un ans, sans enfant, sans passé. Le nom d'une femme qui n'en avait plus besoin, et des papiers qui ont coûté tout ce qui vous restait."),
   ], 's1'),
 

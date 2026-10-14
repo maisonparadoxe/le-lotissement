@@ -81,7 +81,7 @@ export function initialState(story: Story, now: number, settings = { extendedTim
     started: false,
     nodeId: story.start,
     enteredAt: now,
-    alias: 'Claire Ferrand',
+    alias: 'Natasha Lusky',
     flags: {},
     rel: { beatrice: 0, paul: 0, monica: 0, alban: 0 },
     exposure: 0,
