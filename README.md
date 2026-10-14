@@ -10,8 +10,7 @@ Il faut Node.js 20 ou plus récent.
 
 ```bash
 npm install
-npm run build
-npm start          # http://localhost:3000
+npm start          # construit le jeu puis le sert sur http://localhost:3000
 ```
 
 1. Ouvrez `http://localhost:3000` sur l'ordinateur, de préférence en plein écran. Le menu principal propose « Nouvelle partie » et « Options » (temps élargi pour les actions, vitesse du texte).

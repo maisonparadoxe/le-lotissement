@@ -49,8 +49,14 @@ function serveStatic(req: IncomingMessage, res: ServerResponse): void {
   let path = normalize(decodeURIComponent(url.pathname)).replace(/^(\.\.[/\\])+/, '');
   if (path === '/' || path === '') path = '/index.html';
   const file = join(dist, path);
+  if (!existsSync(join(dist, 'index.html'))) {
+    res
+      .writeHead(503, { 'Content-Type': 'text/plain; charset=utf-8' })
+      .end('Le jeu n’est pas encore construit. Arrêtez le serveur (Ctrl+C), puis lancez « npm start » (ou « npm run build » avant).');
+    return;
+  }
   if (!file.startsWith(dist) || !existsSync(file) || !statSync(file).isFile()) {
-    res.writeHead(404).end('Introuvable');
+    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }).end('Page introuvable');
     return;
   }
   const headers: Record<string, string> = { 'Content-Type': MIME[extname(file)] ?? 'application/octet-stream' };
