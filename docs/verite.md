@@ -30,7 +30,7 @@ Alice s'est réveillée du coma il y a environ un an, puis a passé des mois en 
 Lou Delaunay, 7 ans cette nuit-là, 17 ans aujourd'hui, en internat à Lyon. Elle a pris la photo de 23 h 47 et envoie les SMS anonymes. Elle veut comprendre ce qui a brisé son foyer. Elle « déteste cette maison ». Le joueur croit à un règlement de comptes entre adultes ; la révélation change la lecture de la série et donne un enjeu émotionnel aux quatre fins (Lou est innocente, fille de deux coupables).
 
 ## Ce que Lou a vu (validé)
-Réveillée dans la nuit, Lou (7 ans) a suivi sa mère jusqu'au pavillon. Cachée près des haies, elle a pris la photo de 23 h 47 avec le téléphone de Monica, puis a vu Monica pousser Alice dans le bassin. Elle est repartie sans rien dire, terrifiée, et n'a jamais parlé : c'est pourquoi elle « déteste cette maison ». Elle sait que sa mère a poussé Alice ; elle ignore ce que Béatrice et Alban ont fait ensuite, et c'est ce qu'elle cherche à comprendre. Elle ne sait pas, au départ, qu'Alice a survécu.
+Réveillée dans la nuit, Lou (7 ans) a suivi sa mère jusqu'au pavillon. Cachée près des haies, elle a pris la photo de 23 h 47 avec le téléphone de Monica, puis a vu Monica pousser Alice dans le bassin. Elle est repartie sans rien dire, terrifiée, et n'a jamais parlé : c'est pourquoi elle « déteste cette maison ». Elle sait que sa mère a poussé Alice ; elle ignore ce que Béatrice et Alban ont fait ensuite, et c'est ce qu'elle cherche à comprendre. Elle a découvert par hasard qu'Alice a survécu, ce qui la pousse à agir maintenant (comment exactement : question ouverte).
 
 ## Questions encore ouvertes
-- Comment Lou a-t-elle obtenu l'ancien numéro d'Alice et la photo après dix ans ?
+- Comment Lou a-t-elle découvert qu'Alice était vivante, et comment a-t-elle obtenu son ancien numéro ? (La photo, elle l'a prise elle-même avec le téléphone de sa mère.)
