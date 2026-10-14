@@ -1,0 +1,101 @@
+.vf {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #05070a;
+  border-radius: 6px;
+}
+
+.vf-stage .vf {
+  height: 100%;
+  aspect-ratio: auto;
+  border-radius: 0;
+}
+
+.vf-world {
+  position: absolute;
+  inset: 0;
+  will-change: transform, filter;
+  transition: filter 0.12s linear;
+}
+
+.vf-world svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.vf-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.72) 100%);
+}
+
+.vf-reticle {
+  position: absolute;
+  inset: 22% 30%;
+  pointer-events: none;
+  color: var(--vf-col, #e8b86b);
+  transition: color 0.15s;
+}
+
+.vf-reticle i {
+  position: absolute;
+  width: 14%;
+  aspect-ratio: 1;
+  border: 2px solid currentColor;
+}
+
+.vf-reticle i:nth-child(1) { left: 0; top: 0; border-right: 0; border-bottom: 0; }
+.vf-reticle i:nth-child(2) { right: 0; top: 0; border-left: 0; border-bottom: 0; }
+.vf-reticle i:nth-child(3) { left: 0; bottom: 0; border-right: 0; border-top: 0; }
+.vf-reticle i:nth-child(4) { right: 0; bottom: 0; border-left: 0; border-top: 0; }
+
+.vf-reticle b {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 8%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  background:
+    linear-gradient(currentColor, currentColor) center / 100% 2px no-repeat,
+    linear-gradient(currentColor, currentColor) center / 2px 100% no-repeat;
+}
+
+.vf-hud {
+  position: absolute;
+  left: 3%;
+  right: 3%;
+  top: 4%;
+  display: flex;
+  justify-content: space-between;
+  font: 600 clamp(9px, 1.1vw, 15px) / 1 ui-monospace, monospace;
+  letter-spacing: 0.1em;
+  color: #f3ede2;
+  text-shadow: 0 1px 3px #000;
+}
+
+.vf-rec {
+  color: #ff6b63;
+  animation: vf-blink 1.2s steps(2) infinite;
+}
+
+.vf-label {
+  position: absolute;
+  left: 3%;
+  bottom: 4%;
+  font: 600 clamp(9px, 1vw, 14px) / 1 ui-monospace, monospace;
+  color: #f3ede2;
+}
+
+@keyframes vf-blink {
+  50% { opacity: 0.25; }
+}
+
+.vf-stage .vf-hud {
+  right: 24%;
+  top: 3.5%;
+}

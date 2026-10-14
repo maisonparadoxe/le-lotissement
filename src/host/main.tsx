@@ -8,7 +8,7 @@ import { Decor } from '../common/art/Decor.tsx';
 import { unlockAudio } from '../common/feedback.ts';
 import { useLink, type Link } from '../common/net.ts';
 import { ControllerView } from '../controller/ControllerView.tsx';
-import { Stage, type LiveFx } from './Stage.tsx';
+import { LIVE_DEFAULT, Stage, type LiveFx } from './Stage.tsx';
 import '../styles/host.css';
 import '../styles/controller.css';
 
@@ -64,11 +64,19 @@ function App() {
   const [solo, setSolo] = useState(false);
   const [menu, setMenu] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
-  const [live, setLive] = useState<LiveFx>({ keypadEntry: '', qteProgress: 0, navHover: null });
+  const [live, setLive] = useState<LiveFx>(LIVE_DEFAULT);
 
   const applyFx = useCallback((fx: Fx) => {
     setLive((l) =>
-      fx.kind === 'keypad-entry' ? { ...l, keypadEntry: fx.value } : fx.kind === 'qte-progress' ? { ...l, qteProgress: fx.value } : fx.kind === 'nav-hover' ? { ...l, navHover: fx.spot } : l,
+      fx.kind === 'keypad-entry'
+        ? { ...l, keypadEntry: fx.value }
+        : fx.kind === 'qte-progress'
+          ? { ...l, qteProgress: fx.value }
+          : fx.kind === 'nav-hover'
+            ? { ...l, navHover: fx.spot }
+            : fx.kind === 'viewfinder'
+              ? { ...l, vf: { x: fx.x, y: fx.y, zoom: fx.zoom, focus: fx.focus } }
+              : l,
     );
   }, []);
 
@@ -126,7 +134,7 @@ function App() {
   }, [mode]);
 
   // Réinitialise les effets éphémères à chaque changement de nœud.
-  useEffect(() => setLive({ keypadEntry: '', qteProgress: 0, navHover: null }), [state?.nodeId]);
+  useEffect(() => setLive(LIVE_DEFAULT), [state?.nodeId]);
 
   // En mode sans téléphone, le clavier fait avancer les dialogues.
   useEffect(() => {

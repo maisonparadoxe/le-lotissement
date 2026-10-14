@@ -4,6 +4,7 @@ import {
   applyInput,
   availableSpots,
   currentNode,
+  evalCond,
   initialState,
   sanitizeAlias,
   tick,
@@ -23,7 +24,7 @@ function moves(s: GameState): Input[] {
     case 'line':
       return [{ type: 'advance' }];
     case 'choice':
-      return n.options.map((o) => ({ type: 'choose', option: o.id }));
+      return n.options.filter((o) => evalCond(o.when, s)).map((o) => ({ type: 'choose', option: o.id }));
     case 'explore':
       return availableSpots(n, s).map((sp) => ({ type: 'nav-select', spot: sp.id }));
     case 'sms':
@@ -34,13 +35,19 @@ function moves(s: GameState): Input[] {
       return [{ type: 'qte-success' }, { type: 'qte-timeout' as never }];
     case 'input':
       return [{ type: 'input-submit', text: 'Nora Vidal' }];
+    case 'viewfinder':
+      return (['nette', 'floue', 'rate'] as const).map((quality) => ({ type: 'vf-shot', quality }));
+    case 'flirt':
+      return s.flirt?.done
+        ? [{ type: 'flirt-end' }]
+        : (['froid', 'neutre', 'joueuse'] as const).map((tone) => ({ type: 'flirt-send', tone }));
     default:
       return [];
   }
 }
 
 /** Fait avancer d'un pas, une seconde après l'entrée dans le nœud courant. */
-function step(s: GameState, i: Input, now = s.enteredAt + 1000): GameState {
+function step(s: GameState, i: Input, now = Math.max(s.enteredAt, s.flirt?.at ?? 0) + 1000): GameState {
   if ((i.type as string) === 'qte-timeout') {
     const r = tick(story, s, s.qte!.deadline + 10_000);
     assert.ok(r, 'le QTE doit échouer après le délai');
@@ -73,7 +80,12 @@ test('tous les nœuds sont atteignables et toutes les fins le sont aussi', () =>
   // Exploration en largeur. Deux états sont équivalents s'ils partagent le
   // nœud et tout ce que les conditions de l'histoire peuvent tester
   // (drapeaux et indice « registre »).
-  const key = (s: GameState) => `${s.nodeId}|${JSON.stringify(Object.entries(s.flags).sort())}|${s.clues.includes('registre')}`;
+  const tested = new Set([...JSON.stringify(story).matchAll(/"flag":"([^"]+)"/g)].map((m) => m[1]));
+  const key = (s: GameState) => {
+    const flags = Object.entries(s.flags).filter(([k, v]) => v && tested.has(k)).map(([k]) => k).sort();
+    const f = s.flirt && { r: s.flirt.round, t: s.flirt.tension, d: s.flirt.done };
+    return `${s.nodeId}|${flags}|${s.clues.includes('registre')}|${JSON.stringify(f ?? null)}`;
+  };
   const queue: GameState[] = [started()];
   const visitedStates = new Set<string>();
   while (queue.length) {
@@ -147,4 +159,64 @@ test('le nom saisi est nettoyé', () => {
   assert.equal(sanitizeAlias('Anne-Sophie d’Arcy'), 'Anne-Sophie d’Arcy');
   assert.equal(sanitizeAlias('1'), null);
   assert.equal(sanitizeAlias('x'.repeat(80))!.length, 24);
+});
+
+/** Avance jusqu'au premier nœud du type demandé (première option partout). */
+function advanceTo(type: string): GameState {
+  let s = started();
+  for (let i = 0; i < 500 && currentNode(story, s).type !== type; i++) s = forward(s);
+  assert.equal(currentNode(story, s).type, type);
+  return s;
+}
+
+test('le viseur : la netteté de la photo décide de la suite', () => {
+  const s = advanceTo('viewfinder');
+  const n = currentNode(story, s);
+  assert.equal(n.type, 'viewfinder');
+  if (n.type !== 'viewfinder') return;
+  assert.equal(applyInput(story, s, { type: 'vf-shot', quality: 'excellente' as never }, s.enteredAt + 1000), null);
+  assert.equal(applyInput(story, s, { type: 'choose', option: 'x' }, s.enteredAt + 1000), null);
+  const nette = step(s, { type: 'vf-shot', quality: 'nette' });
+  assert.ok(nette.flags.photo_bea_alban && nette.clues.includes('bea-alban'));
+  const floue = step(s, { type: 'vf-shot', quality: 'floue' });
+  assert.ok(!floue.flags.photo_bea_alban && floue.clues.includes('bea-alban-vu'));
+  const rate = step(s, { type: 'vf-shot', quality: 'rate' });
+  assert.ok(!rate.flags.photo_bea_alban && rate.clues.length === s.clues.length);
+});
+
+test('le flirt : le ton du curseur fait monter ou baisser la tension', () => {
+  const run = (tones: ('froid' | 'neutre' | 'joueuse')[]) => {
+    let s = advanceTo('flirt');
+    for (const tone of tones) s = step(s, { type: 'flirt-send', tone });
+    return s;
+  };
+  const start = advanceTo('flirt');
+  assert.equal(start.flirt?.tension, 30);
+  assert.equal(start.sms.paul.messages.length, 1);
+
+  const haut = run(['joueuse', 'joueuse', 'neutre']);
+  assert.equal(haut.flirt?.tension, 75);
+  assert.ok(haut.flirt?.done);
+  assert.equal(haut.sms.paul.messages.length, 7);
+  // pas de sortie avant d'avoir répondu jusqu'au bout
+  assert.equal(applyInput(story, start, { type: 'flirt-end' }, start.enteredAt + 5000), null);
+  const fin = step(haut, { type: 'flirt-end' });
+  assert.ok(fin.flags.flirt_haut && fin.clues.includes('paul-trouble') && fin.rel.paul === Math.min(3, start.rel.paul + 2));
+
+  const bas = step(run(['froid', 'neutre', 'neutre']), { type: 'flirt-end' });
+  assert.ok(bas.flags.flirt_bas && bas.rel.paul === start.rel.paul - 1);
+
+  const moyen = step(run(['neutre', 'neutre', 'neutre']), { type: 'flirt-end' });
+  assert.ok(moyen.flags.flirt_moyen);
+
+  // les messages de Paul changent avec la tension
+  const textes = (s: GameState) => s.sms.paul.messages.filter((m) => m.from === 'eux').map((m) => m.text);
+  assert.notDeepEqual(textes(haut), textes(run(['froid', 'froid', 'froid'])));
+});
+
+test('le flirt : un double appui trop rapide est ignoré', () => {
+  const s = advanceTo('flirt');
+  const un = step(s, { type: 'flirt-send', tone: 'neutre' });
+  assert.equal(applyInput(story, un, { type: 'flirt-send', tone: 'neutre' }, (un.flirt?.at ?? 0) + 100), null);
+  assert.equal(applyInput(story, s, { type: 'flirt-send', tone: 'abc' as never }, s.enteredAt + 5000), null);
 });

@@ -1,6 +1,51 @@
 // Photos reçues par l'héroïne (pièces du dossier).
 
+function BeaAlban({ blur }: { blur: boolean }) {
+  return (
+    <svg className="photo-svg" viewBox="0 0 800 600" role="img" aria-label={blur ? 'Photo floue de deux silhouettes sous un lampadaire' : 'Photo de nuit : deux personnes très proches sous un lampadaire, l’une remet une enveloppe à l’autre'}>
+      <defs>
+        <radialGradient id="bg-glow" cx="0.62" cy="0.3">
+          <stop offset="0" stopColor="#f7d9a0" stopOpacity="0.9" />
+          <stop offset="0.5" stopColor="#f2c98a" stopOpacity="0.25" />
+          <stop offset="1" stopColor="#f2c98a" stopOpacity="0" />
+        </radialGradient>
+        <filter id="bg-blur">
+          <feGaussianBlur stdDeviation="9" />
+        </filter>
+        <filter id="bg-grain">
+          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="3" />
+          <feColorMatrix values="0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0.3 0" />
+          <feComposite in2="SourceGraphic" operator="in" />
+        </filter>
+      </defs>
+      <rect width="800" height="600" fill="#0b111b" />
+      <g filter={blur ? 'url(#bg-blur)' : undefined}>
+        <rect width="800" height="600" fill="url(#bg-glow)" />
+        <rect y="470" width="800" height="130" fill="#161e1d" />
+        <rect x="560" y="120" width="12" height="380" fill="#0c0c0e" />
+        <rect x="544" y="96" width="44" height="34" rx="6" fill="#f7d9a0" />
+        <g transform="translate(330 300) scale(3.4) translate(-990 -515)">
+          <path d="M945 600 L950 505 Q965 492 980 505 L985 600 Z" fill="#4a2028" />
+          <circle cx="965" cy="482" r="14" fill="#d2b190" />
+          <path d="M951 482 Q951 462 966 462 Q980 462 980 482 Q972 472 951 482 Z" fill="#d1b274" />
+          <path d="M995 600 L998 505 Q1013 493 1028 505 L1031 600 Z" fill="#1d3a30" />
+          <circle cx="1013" cy="483" r="15" fill="#b08463" />
+          <path d="M998 482 Q998 464 1013 464 Q1028 464 1028 482 Q1018 473 998 482 Z" fill="#c4c4bf" />
+          <path d="M978 515 L997 521" stroke="#4a2028" strokeWidth="6" strokeLinecap="round" />
+          <rect x="988" y="517" width="14" height="9" fill="#f3ede2" transform="rotate(-8 995 521)" />
+        </g>
+      </g>
+      <rect width="800" height="600" filter="url(#bg-grain)" />
+      <text x="770" y="570" textAnchor="end" fontFamily="'Courier New', monospace" fontSize="28" fontWeight="bold" fill="#f28c28" opacity="0.9">
+        00:21
+      </text>
+    </svg>
+  );
+}
+
 export function Photo({ id }: { id: string }) {
+  if (id === 'bea-alban') return <BeaAlban blur={false} />;
+  if (id === 'bea-alban-floue') return <BeaAlban blur />;
   if (id !== 'pavillon-2347') return null;
   return (
     <svg className="photo-svg" viewBox="0 0 800 600" role="img" aria-label="Photo de nuit : le pavillon de la piscine, une voiture rouge garée devant, une silhouette derrière la vitre. Horodatage 21.06.2016 23:47.">

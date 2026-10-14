@@ -489,17 +489,20 @@
 }
 
 /* ───────────── Téléphone de l'héroïne */
-.mode-telephone {
+.mode-telephone,
+.mode-flirt {
   background: #e9e3d8;
   color: var(--encre);
 }
 
-.mode-telephone .ctrl-top {
+.mode-telephone .ctrl-top,
+.mode-flirt .ctrl-top {
   color: #6b6560;
   border-bottom-color: rgba(26, 20, 22, 0.08);
 }
 
-.mode-telephone .ctrl-body {
+.mode-telephone .ctrl-body,
+.mode-flirt .ctrl-body {
   padding: 0;
 }
 
@@ -1033,4 +1036,206 @@
 .settings {
   display: grid;
   gap: 16px;
+}
+
+/* ───────────── Viseur */
+.mode-viseur {
+  background: #090b0e;
+}
+
+.m-vf {
+  display: grid;
+  gap: 10px;
+}
+
+.m-vf .prompt {
+  margin-bottom: 4px;
+}
+
+.vf-touch {
+  position: relative;
+  touch-action: none;
+  cursor: grab;
+}
+
+.vf-flash {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  animation: vf-flash 0.35s ease-out both;
+}
+
+@keyframes vf-flash {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.vf-focus {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(243, 237, 226, 0.15);
+  overflow: hidden;
+}
+
+.vf-focus div {
+  height: 100%;
+  transition: background 0.2s;
+}
+
+.vf-hint {
+  margin: 0;
+  min-height: 1.4em;
+  text-align: center;
+  font-size: 14px;
+  color: #d9cfbf;
+}
+
+.vf-zoom {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: center;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gris-bleu-2);
+}
+
+.vf-zoom input,
+.tone-slider input {
+  width: 100%;
+  height: 32px;
+  accent-color: var(--lumiere);
+}
+
+.vf-shutter {
+  justify-self: center;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  border: 4px solid var(--ivoire);
+  background: radial-gradient(circle, var(--ivoire) 0 55%, transparent 56%);
+}
+
+.vf-shutter:active {
+  transform: scale(0.93);
+}
+
+.vf-lower {
+  justify-self: center;
+  border: 0;
+  background: transparent;
+  color: var(--gris-bleu-2) !important;
+  font-size: 14px !important;
+  padding: 6px;
+}
+
+/* ───────────── Flirt */
+.hp-flirt .hp-thread {
+  min-height: 0;
+}
+
+.tension {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 16px;
+  background: #ece6db;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #6b6560;
+}
+
+.tension div {
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(26, 20, 22, 0.12);
+  overflow: hidden;
+}
+
+.tension i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #9aa8b8, #c77d8a 60%, #a3263a);
+  transition: width 0.5s ease;
+}
+
+.tension em {
+  min-width: 56px;
+  font-style: normal;
+  text-align: right;
+  color: var(--bordeaux-2);
+}
+
+.bubble.typing {
+  display: inline-flex;
+  gap: 4px;
+  padding: 14px 16px;
+}
+
+.bubble.typing i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #8a837b;
+  animation: typing 1s infinite ease-in-out;
+}
+
+.bubble.typing i:nth-child(2) { animation-delay: 0.15s; }
+.bubble.typing i:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes typing {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+.tone-slider div {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: #6b6560;
+}
+
+.tone-slider span {
+  display: grid;
+  justify-items: center;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+
+.tone-slider span.on {
+  color: var(--bordeaux-2);
+  font-weight: 600;
+}
+
+.tone-slider small {
+  font-size: 11px;
+}
+
+.reply-preview {
+  margin: 0;
+  min-height: 3em;
+  padding: 8px 12px;
+  border-radius: 14px;
+  background: #fff;
+  color: var(--bouteille);
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.hp-reply.send {
+  background: var(--bouteille-2);
+  color: var(--ivoire) !important;
+  text-align: center;
+  font-weight: 600;
+}
+
+.hp-reply:disabled {
+  opacity: 0.5;
+}
+
+.hp-reply.done {
+  text-align: center;
 }

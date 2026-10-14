@@ -8,12 +8,15 @@ import type {
   ChoiceOption,
   Cond,
   Effects,
+  FlirtRound,
+  FlirtVariants,
   Mood,
   SmsMessage,
   SmsReply,
   Spot,
   Stage,
   StoryNode,
+  ViewfinderOutcome,
 } from '../types.ts';
 
 type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never;
@@ -86,6 +89,23 @@ export const goto = (next: string, effects?: Effects): Beat => node({ type: 'got
 
 export const branch = (cond: Cond, then: string, otherwise: string): Beat =>
   node({ type: 'branch', cond, then, else: otherwise }, true);
+
+export const viewfinder = (o: {
+  prompt: string;
+  target: { at: [number, number]; radius: number };
+  minZoom: number;
+  nette: ViewfinderOutcome;
+  floue: ViewfinderOutcome;
+  rate: ViewfinderOutcome;
+}): Beat => node({ type: 'viewfinder', ...o }, true);
+
+export const flirt = (o: {
+  thread: string;
+  contact: string;
+  rounds: FlirtRound[];
+  outro: FlirtVariants;
+  outcome: { high: Effects; mid: Effects; low: Effects };
+}): Beat => node({ type: 'flirt', ...o });
 
 export const end = (t: string): Beat => node({ type: 'end', title: t }, true);
 

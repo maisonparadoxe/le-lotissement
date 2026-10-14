@@ -5,6 +5,8 @@ import { useEffect, useRef, useState } from 'react';
 import {
   availableSpots,
   currentNode,
+  FLIRT_DELTA,
+  FLIRT_HIGH,
   fmt,
   phoneMode,
   PHONE_MODE_LABEL,
@@ -13,7 +15,8 @@ import {
   type PhoneMode,
 } from '../../shared/engine.ts';
 import type { Fx } from '../../shared/protocol.ts';
-import type { Story, Tone } from '../../shared/types.ts';
+import type { FlirtNode, FlirtTone, Story, Tone, ViewfinderNode } from '../../shared/types.ts';
+import { focusColor, ViewfinderWorld, VIEW_DEFAULT, type ViewfinderView } from '../common/ViewfinderWorld.tsx';
 import { Photo } from '../common/art/Photo.tsx';
 import { cue, setMuted } from '../common/feedback.ts';
 import { EndSummary } from '../common/EndSummary.tsx';
@@ -35,6 +38,8 @@ const MODE_ICON: Record<PhoneMode, string> = {
   digicode: '#',
   action: '!',
   saisie: '⌨',
+  viseur: '◎',
+  flirt: '♡',
   fin: '★',
 };
 
@@ -72,7 +77,7 @@ export function ControllerView({ story, state, send, sendFx, connection, serverO
     send(i);
   };
 
-  const canDossier = mode !== 'telephone' && mode !== 'action' && mode !== 'attente';
+  const canDossier = !['telephone', 'action', 'attente', 'viseur', 'flirt'].includes(mode);
 
   return (
     <div className={`ctrl mode-${mode}`}>
@@ -177,6 +182,12 @@ function ModeView({
 
     case 'action':
       return node.type === 'qte' ? <Qte node={node} state={state} send={send} sendFx={sendFx} serverOffset={serverOffset} /> : null;
+
+    case 'viseur':
+      return node.type === 'viewfinder' ? <Viewfinder node={node} send={send} sendFx={sendFx} /> : null;
+
+    case 'flirt':
+      return node.type === 'flirt' ? <FlirtPhone node={node} state={state} tap={tap} /> : null;
 
     case 'saisie':
       return node.type === 'input' ? <TextInput prompt={node.prompt} suggestions={node.suggestions} onSubmit={(text) => tap({ type: 'input-submit', text })} /> : null;
@@ -488,6 +499,231 @@ function Qte({
         <span>Maintenir</span>
       </button>
       {state.settings.extendedTime && <p className="small">Temps élargi activé.</p>}
+    </div>
+  );
+}
+
+// ───────────────────────────── Viseur (voyeurisme)
+function Viewfinder({ node, send, sendFx }: { node: ViewfinderNode; send: (i: Input) => void; sendFx: (fx: Fx) => void }) {
+  const cam = useRef({ x: 50, y: 50, zoom: 1 });
+  const focusRef = useRef(0);
+  const [view, setView] = useState<ViewfinderView>(VIEW_DEFAULT);
+  const [parts, setParts] = useState({ aim: 0, zoom: 0, steady: 0 });
+  const [flash, setFlash] = useState(false);
+  const shot = useRef(false);
+  const drag = useRef<{ x: number; y: number } | null>(null);
+  const box = useRef<HTMLDivElement>(null);
+  const [tx, ty] = node.target.at;
+  const r = node.target.radius;
+
+  const place = (x: number, y: number, zoom: number) => {
+    const half = 50 / zoom;
+    cam.current = { zoom, x: Math.max(half, Math.min(100 - half, x)), y: Math.max(half, Math.min(100 - half, y)) };
+  };
+
+  useEffect(() => {
+    let raf = 0;
+    let last = { x: 50, y: 50, t: performance.now() };
+    let speed = 0;
+    let lastFx = 0;
+    const loop = (t: number) => {
+      const c = cam.current;
+      const dt = Math.max(1, t - last.t);
+      speed += ((Math.hypot(c.x - last.x, c.y - last.y) / dt) * 1000 - speed) * 0.25;
+      last = { x: c.x, y: c.y, t };
+      const dist = Math.hypot(c.x - tx, c.y - ty);
+      const aim = dist <= r ? 1 : Math.max(0, 1 - (dist - r) / r);
+      const zoom = Math.max(0, Math.min(1, (c.zoom - 1) / (node.minZoom - 1)));
+      const steady = Math.max(0, Math.min(1, 1 - speed / 25));
+      focusRef.current += (aim * zoom * steady - focusRef.current) * 0.2;
+      setView({ ...c, focus: focusRef.current });
+      setParts({ aim, zoom, steady });
+      if (t - lastFx > 100) {
+        lastFx = t;
+        sendFx({ kind: 'viewfinder', x: c.x, y: c.y, zoom: c.zoom, focus: focusRef.current });
+      }
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, [node.minZoom, r, tx, ty, sendFx]);
+
+  const onMove = (e: React.PointerEvent) => {
+    if (!drag.current || !box.current) return;
+    const { clientWidth: w, clientHeight: h } = box.current;
+    const c = cam.current;
+    // « Saisir » l'image : le doigt qui glisse à droite décale le cadre vers la gauche.
+    place(c.x - ((e.clientX - drag.current.x) / w) * (100 / c.zoom), c.y - ((e.clientY - drag.current.y) / h) * (100 / c.zoom), c.zoom);
+    drag.current = { x: e.clientX, y: e.clientY };
+  };
+
+  const fire = (forced?: 'rate') => {
+    if (shot.current) return;
+    shot.current = true;
+    const f = focusRef.current;
+    const quality = forced ?? (f >= 0.7 ? 'nette' : f >= 0.3 ? 'floue' : 'rate');
+    setFlash(true);
+    cue(quality === 'rate' ? 'erreur' : 'succes');
+    setTimeout(() => send({ type: 'vf-shot', quality }), 220);
+  };
+
+  const hint =
+    parts.zoom < 1
+      ? 'Zoomez pour rapprocher la scène.'
+      : parts.aim < 1
+        ? 'Glissez pour viser les deux silhouettes.'
+        : parts.steady < 0.8
+          ? 'Ne bougez plus…'
+          : 'Net. Déclenchez.';
+
+  return (
+    <div className="m-vf">
+      <p className="prompt">{node.prompt}</p>
+      <div
+        ref={box}
+        className="vf-touch"
+        onPointerDown={(e) => {
+          e.currentTarget.setPointerCapture(e.pointerId);
+          drag.current = { x: e.clientX, y: e.clientY };
+        }}
+        onPointerMove={onMove}
+        onPointerUp={() => (drag.current = null)}
+        onPointerCancel={() => (drag.current = null)}
+      >
+        <ViewfinderWorld view={view} />
+        {flash && <div className="vf-flash" />}
+      </div>
+      <div className="vf-focus" aria-label="Netteté">
+        <div style={{ width: `${view.focus * 100}%`, background: focusColor(view.focus) }} />
+      </div>
+      <p className="vf-hint">{hint}</p>
+      <label className="vf-zoom">
+        <span>Zoom</span>
+        <input type="range" min={1} max={3} step={0.05} value={view.zoom} onChange={(e) => place(cam.current.x, cam.current.y, Number(e.target.value))} aria-label="Zoom" />
+      </label>
+      <button className="vf-shutter" onClick={() => fire()} aria-label="Déclencher" />
+      <button className="vf-lower" onClick={() => fire('rate')}>
+        Baisser le téléphone
+      </button>
+    </div>
+  );
+}
+
+// ───────────────────────────── Flirt (séduction)
+const TONES: { id: FlirtTone; label: string }[] = [
+  { id: 'froid', label: 'Froide' },
+  { id: 'neutre', label: 'Neutre' },
+  { id: 'joueuse', label: 'Joueuse' },
+];
+
+function FlirtPhone({ node, state, tap }: { node: FlirtNode; state: GameState; tap: (i: Input) => void }) {
+  const f = state.flirt!;
+  const thread = state.sms[node.thread];
+  const total = thread.messages.length;
+  const [tone, setTone] = useState(1);
+  const [shown, setShown] = useState(total);
+  const end = useRef<HTMLDivElement>(null);
+
+  // Le message de l'autre n'arrive qu'après un petit délai (« écrit… »).
+  useEffect(() => {
+    if (total <= shown) {
+      if (total < shown) setShown(total);
+      return;
+    }
+    const last = thread.messages[total - 1];
+    if (last.from === 'eux' && total - shown >= 2) {
+      setShown(total - 1);
+      const t = setTimeout(() => {
+        setShown(total);
+        cue('message');
+      }, 1500);
+      return () => clearTimeout(t);
+    }
+    setShown(total);
+  }, [total]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => end.current?.scrollIntoView({ behavior: 'smooth' }), [shown, state.phone.opened]);
+
+  const typing = shown < total;
+  const pct = f.tension;
+  const level = pct >= FLIRT_HIGH ? 'haute' : pct <= 25 ? 'basse' : 'moyenne';
+  const selected = TONES[tone].id;
+  const preview = f.done ? '' : fmt(node.rounds[f.round].replies[selected], state);
+
+  if (!state.phone.opened) {
+    return (
+      <div className="hp hp-lock" onClick={() => tap({ type: 'sms-open' })}>
+        <div className="hp-clock">00:12</div>
+        <div className="hp-date">dimanche 15 juin</div>
+        <button className="hp-notif">
+          <span className="hp-notif-app">MESSAGES · maintenant</span>
+          <strong>{node.contact}</strong>
+          <span>{thread.messages[0]?.text}</span>
+        </button>
+        <p className="hp-unlock">Touchez pour ouvrir</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="hp hp-open hp-flirt">
+      <div className="hp-bar">
+        <span>00:12</span>
+        <strong>{node.contact}</strong>
+        <span>♡</span>
+      </div>
+      <div className={`tension tension-${level}`} aria-label={`Tension ${pct} sur 100`}>
+        <span>Tension</span>
+        <div>
+          <i style={{ width: `${pct}%` }} />
+        </div>
+        <em>{level}</em>
+      </div>
+      <div className="hp-thread">
+        {thread.messages.slice(0, shown).map((m, i) => (
+          <div key={i} className={`bubble ${m.from}`}>
+            {m.text}
+          </div>
+        ))}
+        {typing && (
+          <div className="bubble eux typing" aria-label="Il écrit">
+            <i /> <i /> <i />
+          </div>
+        )}
+        <div ref={end} />
+      </div>
+      <div className="hp-replies">
+        {f.done ? (
+          <button className="hp-reply done" disabled={typing} onClick={() => tap({ type: 'flirt-end' })}>
+            Ranger le téléphone
+          </button>
+        ) : (
+          <>
+            <div className="tone-slider" role="radiogroup" aria-label="Ton de la réponse">
+              <input type="range" min={0} max={2} step={1} value={tone} onChange={(e) => setTone(Number(e.target.value))} aria-label="Ton" />
+              <div>
+                {TONES.map((t, i) => (
+                  <span key={t.id} className={i === tone ? 'on' : ''} onClick={() => setTone(i)}>
+                    {t.label}
+                    <small>{FLIRT_DELTA[t.id] > 0 ? '↑' : FLIRT_DELTA[t.id] < 0 ? '↓' : '·'}</small>
+                  </span>
+                ))}
+              </div>
+            </div>
+            <p className="reply-preview">{preview}</p>
+            <button
+              className="hp-reply send"
+              disabled={typing}
+              onClick={() => {
+                tap({ type: 'flirt-send', tone: selected });
+                setTone(1);
+              }}
+            >
+              Envoyer
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 }

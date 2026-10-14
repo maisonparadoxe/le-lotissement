@@ -150,6 +150,52 @@ export interface InputNode extends BaseNode {
   next: string;
 }
 
+export type FlirtTone = 'froid' | 'neutre' | 'joueuse';
+
+/** Texte qui dépend de la tension du moment (basse, moyenne, haute). */
+export interface FlirtVariants {
+  low: string;
+  mid: string;
+  high: string;
+}
+
+export interface FlirtRound {
+  /** Message reçu au début du tour. */
+  incoming: string | FlirtVariants;
+  /** Ce qui part selon le ton choisi au curseur. */
+  replies: Record<FlirtTone, string>;
+}
+
+/** Échange de SMS de séduction : un curseur de ton fait monter ou baisser la tension. */
+export interface FlirtNode extends BaseNode {
+  type: 'flirt';
+  thread: string;
+  contact: string;
+  rounds: FlirtRound[];
+  /** Dernier message reçu après la dernière réponse. */
+  outro: FlirtVariants;
+  outcome: { high: Effects; mid: Effects; low: Effects };
+  next: string;
+}
+
+export interface ViewfinderOutcome {
+  effects?: Effects;
+  next: string;
+}
+
+/** Le téléphone devient un viseur : cadrer, zoomer, rester immobile, déclencher. */
+export interface ViewfinderNode extends BaseNode {
+  type: 'viewfinder';
+  prompt: string;
+  /** Position de la cible en % de l'image (x, y) et rayon de tolérance. */
+  target: { at: [number, number]; radius: number };
+  /** Zoom nécessaire pour une image nette. */
+  minZoom: number;
+  nette: ViewfinderOutcome;
+  floue: ViewfinderOutcome;
+  rate: ViewfinderOutcome;
+}
+
 export interface EndNode extends BaseNode {
   type: 'end';
   title: string;
@@ -179,6 +225,8 @@ export type StoryNode =
   | KeypadNode
   | QteNode
   | InputNode
+  | FlirtNode
+  | ViewfinderNode
   | EndNode;
 
 export interface Clue {

@@ -1021,3 +1021,53 @@ button {
     width: 100%;
   }
 }
+
+/* ───────────── Viseur et flirt */
+.vf-stage {
+  position: absolute;
+  inset: 0;
+  animation: fade-in 0.5s ease both;
+}
+
+.vf-prompt {
+  bottom: 3%;
+  min-height: 0;
+  padding: 1cqw 2cqw;
+}
+
+.vf-prompt .text {
+  font-size: 1.8cqw;
+}
+
+.flirt-notice {
+  min-width: 26cqw;
+}
+
+.flirt-meter {
+  display: flex;
+  align-items: center;
+  gap: 0.8cqw;
+  margin: 0.8cqw 0 0.2cqw;
+  font-size: 0.9cqw;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gris-bleu-2);
+}
+
+.flirt-meter div {
+  flex: 1;
+  height: 0.7cqw;
+  background: rgba(243, 237, 226, 0.15);
+  overflow: hidden;
+}
+
+.flirt-meter i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #9aa8b8, #c77d8a 60%, #d9443f);
+  transition: width 0.6s ease;
+}
+
+.flirt-notice.tension-high {
+  border-left-color: #d9443f;
+}

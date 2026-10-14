@@ -8,8 +8,9 @@ Responsabilité collective, en chaîne. Personne n'a voulu tuer Alice : chacun a
 ## Chronologie de la nuit
 - **22 h** : Alice est censée être partie (version de Béatrice).
 - **23 h 30** : Paul rend la clé du pavillon (registre : « P.D. »). Il vient de se disputer avec Alice, qui voulait tout dire à Monica. Il part. Il est lâche, pas meurtrier.
-- **23 h 47** : la photo anonyme est prise (voiture d'Alice devant le pavillon, silhouette derrière la vitre).
-- **23 h 50** : Monica arrive. Elle sait pour la liaison. La confrontation tourne mal : elle pousse Alice, qui se cogne contre le bord du bassin et tombe à l'eau. Monica s'enfuit sans savoir si Alice est morte.
+- **23 h 45** : Monica arrive au pavillon. Lou, réveillée, l'a suivie.
+- **23 h 47** : Lou, cachée près des haies, prend la photo avec le téléphone de sa mère (voiture d'Alice devant le pavillon, silhouette d'Alice derrière la vitre).
+- **23 h 50** : Monica sait pour la liaison. La confrontation tourne mal : elle pousse Alice, qui se cogne contre le bord du bassin et tombe à l'eau. Monica s'enfuit sans savoir si Alice est morte.
 - **Minuit** : Béatrice sort Alice de l'eau. Elle respire encore. Béatrice n'appelle pas les secours : Alice avait découvert qu'elle détournait l'argent du syndic (c'est pourquoi il n'y avait « jamais de budget » pour le pavillon). C'est elle qui dit « Laisse-la » (le souvenir fragmentaire du prologue).
 - **00 h 40** : Alban, appelé par Béatrice (« il me doit beaucoup »), doit faire disparaître la voiture dans l'étang du Moulin. Il trouve Alice vivante, n'a pas le courage d'aller plus loin, la dépose près d'un hôpital, sans papiers (registre : « A.R. »).
 - Le lendemain : Paul trouve le téléphone d'Alice au bord du bassin et le garde (peur), puis le cache dans le local technique.

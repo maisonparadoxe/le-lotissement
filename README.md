@@ -37,6 +37,8 @@ Pour journaliser les parties de test (section 11) : `PLAYTEST_LOG=1 npm start`. 
 | Téléphone de l'héroïne | SMS et photos | Écran verrouillé, notification, conversation, réponses. Une photo ouverte sur le téléphone s'affiche aussi en grand sur l'écran. |
 | Digicode | Saisie directe | Les chiffres tapés s'affichent sur le boîtier, à l'écran. Après des erreurs, des indices de plus en plus précis apparaissent. |
 | QTE | Action | Bouton à maintenir. Si on relâche, la jauge redescend doucement au lieu de repartir à zéro. Option « temps élargi ». |
+| Voyeurisme | Viseur photo | Scène 3 : du salon, on surprend Béatrice et Alban sous le lampadaire. On glisse pour cadrer, on zoome, on reste immobile : l'image se floute tant que la mise au point est mauvaise, et la netteté du cliché décide de ce qu'on sait (et de ce qu'on peut dire à Béatrice ensuite). L'écran principal montre la même vue. |
+| Séduction | Messagerie et tension | Scène 3 : Paul écrit à la nouvelle voisine, qu'il ne reconnaît pas. Un curseur de ton (froide, neutre, joueuse) fait monter ou baisser une jauge de tension visible sur l'écran ; l'autre « écrit… » avant de répondre, et ses messages changent selon la tension. |
 | Dossier | Enquête | Indices et messages déjà obtenus, réglages |
 
 Chaque transformation est annoncée : animation et vibration sur le téléphone, bandeau « Votre téléphone devient : … » sur l'écran.

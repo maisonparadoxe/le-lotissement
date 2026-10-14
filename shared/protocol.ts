@@ -8,6 +8,7 @@ export type Fx =
   | { kind: 'keypad-entry'; value: string }
   | { kind: 'qte-progress'; value: number }
   | { kind: 'nav-hover'; spot: string | null }
+  | { kind: 'viewfinder'; x: number; y: number; zoom: number; focus: number }
   | { kind: 'ping' };
 
 export type ClientMsg =

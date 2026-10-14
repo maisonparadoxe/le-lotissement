@@ -2,18 +2,22 @@
 // reflet de ce que fait le téléphone (digicode, photo, QTE…).
 
 import { useEffect, useState } from 'react';
-import { availableSpots, currentNode, fmt, type GameState } from '../../shared/engine.ts';
+import { availableSpots, currentNode, flirtLevel, fmt, type GameState } from '../../shared/engine.ts';
 import type { Story } from '../../shared/types.ts';
 import { Decor } from '../common/art/Decor.tsx';
 import { Photo } from '../common/art/Photo.tsx';
 import { Portrait } from '../common/art/Portrait.tsx';
 import { EndSummary } from '../common/EndSummary.tsx';
+import { ViewfinderWorld, VIEW_DEFAULT, type ViewfinderView } from '../common/ViewfinderWorld.tsx';
 
 export interface LiveFx {
   keypadEntry: string;
   qteProgress: number;
   navHover: string | null;
+  vf: ViewfinderView;
 }
+
+export const LIVE_DEFAULT: LiveFx = { keypadEntry: '', qteProgress: 0, navHover: null, vf: VIEW_DEFAULT };
 
 function Typewriter({ text, speed = 22 }: { text: string; speed?: number }) {
   const [n, setN] = useState(0);
@@ -101,6 +105,35 @@ export function Stage({ story, state, live, serverOffset }: { story: Story; stat
         <div className="dialogue prompt-box">
           <p className="text">{node.prompt}</p>
           <p className="phone-hint">Saisissez-le sur le téléphone</p>
+        </div>
+      )}
+
+      {node.type === 'viewfinder' && (
+        <div className="vf-stage">
+          <ViewfinderWorld view={live.vf} />
+          <div className="dialogue prompt-box vf-prompt">
+            <p className="text">{node.prompt}</p>
+            <p className="phone-hint">Votre téléphone est devenu un viseur : glissez pour cadrer, zoomez, restez immobile</p>
+          </div>
+        </div>
+      )}
+
+      {node.type === 'flirt' && state.flirt && (
+        <div className={`sms-notice flirt-notice tension-${flirtLevel(state.flirt.tension)}`}>
+          <div className="mini-phone">
+            <span />
+          </div>
+          <div>
+            <p className="who">{state.phone.opened ? 'Vous échangez des messages' : 'Nouveau message'}</p>
+            <p className="text">{node.contact}</p>
+            <div className="flirt-meter" aria-label={`Tension ${state.flirt.tension} sur 100`}>
+              <span>Tension</span>
+              <div>
+                <i style={{ width: `${state.flirt.tension}%` }} />
+              </div>
+            </div>
+            <p className="phone-hint">{state.phone.opened ? 'Dosez votre ton sur le téléphone' : 'Regardez votre téléphone'}</p>
+          </div>
         </div>
       )}
 

@@ -8,6 +8,7 @@ import {
   end,
   enter,
   explore,
+  flirt,
   iff,
   input,
   keypad,
@@ -20,6 +21,7 @@ import {
   sms,
   stage,
   title,
+  viewfinder,
   withFx,
 } from './builder.ts';
 
@@ -37,6 +39,7 @@ const nodes: Record<string, StoryNode> = {
     memory("De la nuit du 21 juin, il ne reste que des éclats. De l'eau froide. Une lumière bleue. Une voix qui disait : « Laisse-la. »"),
     narr("Pour tout le monde, Alice Marchal s'est noyée dans l'étang du Moulin. On n'a jamais retrouvé le corps."),
     narr("Sur le bail de la maison n°9, l'agence a inscrit un autre nom."),
+    narr("Il y a trois mois, un message est arrivé sur un numéro que vous croyiez mort : une photo prise de nuit, sans un mot. C'est elle qui vous a décidée à revenir."),
     input('Quel nom porte votre nouvelle identité ?', ['Natasha Lusky', 'Nora Vidal', 'Juliette Armand']),
     narr("{alias}. Traductrice, quarante et un ans, sans enfant, sans passé. Le nom d'une femme qui n'en avait plus besoin, et des papiers qui ont coûté tout ce qui vous restait."),
   ], 's1'),
@@ -237,18 +240,100 @@ const nodes: Record<string, StoryNode> = {
   ...seq('s2.fin', { decor: 'salon', time: 'nuit', cast: [{ id: 'paul', pos: 'centre', mood: 'trouble' }] }, [
     narr('La soirée se termine sur des politesses. Sur le pas de la porte, Paul vous retient une seconde.'),
     ...say('paul', 'Faites attention à vous. Les gens d’ici adorent les histoires.'),
+  ], 's3w'),
+
+  // ─────────────────────────────── Scène 3 — La fenêtre (viseur, flirt)
+  ...seq('s3w', allee('nuit'), [
+    title('Scène 3', 'La fenêtre'),
+    narr("Minuit passé. Vous n'arrivez pas à dormir dans la maison du 9. Vous vous asseyez dans le noir, derrière la vitre du salon, face à l'allée."),
+    narr('Au bout du domaine, sous le dernier lampadaire, deux silhouettes se parlent à voix basse.'),
+    narr('Votre téléphone sait cadrer de loin. Zoomez, gardez la main immobile, et attendez que l’image devienne nette.'),
+    viewfinder({
+      prompt: 'Qui parle, sous le lampadaire ?',
+      target: { at: [62, 57], radius: 7 },
+      minZoom: 2.2,
+      nette: { effects: { flags: { photo_bea_alban: true }, clues: ['bea-alban'], log: 'Vous avez photographié Béatrice et Alban ensemble, de nuit.' }, next: 's3w.nette' },
+      floue: { effects: { clues: ['bea-alban-vu'] }, next: 's3w.floue' },
+      rate: { next: 's3w.rate' },
+    }),
+  ]),
+  ...seq('s3w.nette', { ...allee('nuit'), photo: 'bea-alban' }, [
+    narr('Le déclencheur claque, silencieux. Béatrice et Alban, très proches, sa main à elle sur sa poitrine. Elle lui glisse une enveloppe.'),
+    narr('Une liaison ? Une dette ? Dans ce lotissement, la frontière est mince.'),
+    stage({ photo: undefined }),
+  ], 's3w.paul'),
+  ...seq('s3w.floue', { ...allee('nuit'), photo: 'bea-alban-floue' }, [
+    narr('Trop de tremblement : le cliché n’est qu’un flou de lumière. Mais vous avez reconnu la coiffure claire de Béatrice et la veste verte d’Alban.'),
+    narr("Que se disaient-ils, si près l'un de l'autre, à cette heure ?"),
+    stage({ photo: undefined }),
+  ], 's3w.paul'),
+  ...seq('s3w.rate', allee('nuit'), [
+    narr('Vous les perdez de vue. Quand vous relevez la tête, l’allée est vide.'),
+    narr('Vous croyez avoir reconnu une silhouette claire. Vous n’en êtes pas sûre.'),
+  ], 's3w.paul'),
+
+  ...seq('s3w.paul', allee('nuit'), [
+    narr('Dans la maison d’en face, une fenêtre s’éclaire. Votre téléphone vibre.'),
+    flirt({
+      thread: 'paul',
+      contact: 'Paul (n°14)',
+      rounds: [
+        {
+          incoming: "C'est Paul, du 14. Béatrice m'a donné votre numéro, j'espère que ça ne vous dérange pas. Je voulais m'excuser pour ce soir : Monica a… du caractère.",
+          replies: {
+            froid: 'Il suffisait de vous excuser à table.',
+            neutre: 'Pas de souci. La soirée était instructive.',
+            joueuse: 'Du caractère, c’est une jolie façon de le dire. Et vous, Paul, vous en avez ?',
+          },
+        },
+        {
+          incoming: {
+            low: 'Je vous ai froissée, je crois. C’est maladroit de ma part.',
+            mid: 'Ici, tout le monde s’observe. Je suis surpris d’être le seul à vous écrire à cette heure.',
+            high: 'Vous m’avez troublé ce soir. Je ne sais pas pourquoi. Vous avez quelque chose… de familier.',
+          },
+          replies: {
+            froid: 'Il est tard, Paul. Et vous êtes marié.',
+            neutre: 'Je dors mal, ces temps-ci. Et vous ?',
+            joueuse: 'Vous m’observiez, alors. Qu’est-ce que vous avez vu ?',
+          },
+        },
+        {
+          incoming: {
+            low: 'Bien. Je vous laisse tranquille, {alias}.',
+            mid: 'Ma femme dort. Moi, je regarde la maison d’en face. La vôtre.',
+            high: 'Je vois votre lumière depuis mon bureau. Vous êtes derrière la vitre, n’est-ce pas ? Je ne devrais pas écrire ça.',
+          },
+          replies: {
+            froid: 'Éteignez votre lampe et allez vous coucher.',
+            neutre: 'Regardez ailleurs, alors.',
+            joueuse: 'Alors regardez bien. Je ne bouge pas.',
+          },
+        },
+      ],
+      outro: {
+        low: 'Bonne nuit.',
+        mid: 'Bonne nuit, {alias}. Je ne vous ai pas écrit, d’accord ?',
+        high: 'Je ne devrais pas. Passez demain à l’atelier, derrière chez moi : je vous montrerai les anciens plans du domaine. On y est tranquilles.',
+      },
+      outcome: {
+        high: { rel: { paul: 2 }, exposure: 1, flags: { flirt_haut: true }, clues: ['paul-trouble'], log: 'Vous avez laissé Paul s’approcher. Il vous trouve « familière ».' },
+        mid: { rel: { paul: 1 }, flags: { flirt_moyen: true }, log: 'Vous avez entretenu l’ambiguïté avec Paul.' },
+        low: { rel: { paul: -1 }, flags: { flirt_bas: true }, log: 'Vous avez gardé Paul à distance.' },
+      },
+    }),
   ], 's3'),
 
-  // ─────────────────────────────── Scène 3 — Le message
+  // ─────────────────────────────── Scène 4 — Le message
   ...seq('s3', allee('nuit'), [
-    title('Scène 3', 'Le message'),
-    narr('Minuit passé. Vous êtes assise sur les marches du 9, dans le noir. Le lotissement dort, ou fait semblant.'),
-    narr('Votre téléphone vibre.'),
+    title('Scène 4', 'Le message'),
+    narr('Une deuxième vibration, presque aussitôt. Numéro masqué. Vous connaissez ce numéro : c’est lui qui vous a décidée à revenir.'),
     sms({
       thread: 'anonyme',
       contact: 'Numéro masqué',
       incoming: [
         { text: "Vous posez beaucoup de questions sur le 21 juin." },
+        { text: 'Regardez la photo encore une fois. Vous savez maintenant où elle a été prise.' },
         { photo: 'pavillon-2347' },
         { text: "Elle n'est jamais allée à l'étang ce soir-là." },
       ],
@@ -266,7 +351,7 @@ const nodes: Record<string, StoryNode> = {
     sms({ thread: 'anonyme', contact: 'Numéro masqué', incoming: [{ text: 'Non.' }], dismiss: { label: 'Regarder la photo' } }),
   ], 's3.photo'),
   ...seq('s3.photo', { ...allee('nuit'), photo: 'pavillon-2347' }, [
-    narr('Vous agrandissez la photo. Le pavillon de la piscine, la nuit. Devant, une petite voiture rouge.'),
+    narr('Vous rouvrez la photo que vous connaissez par cœur. Jusqu’ici, vous ne saviez pas où elle avait été prise. Maintenant, vous le savez : le pavillon de la piscine, que vous avez vu ce soir par la baie vitrée. Devant, une petite voiture rouge.'),
     narr('Votre voiture. Celle que les gendarmes ont sortie de l’étang.'),
     withFx({ clues: ['photo-2347'] }, narr("L'horodatage indique 23 h 47. Selon Béatrice, vous étiez partie à 22 h. Selon Paul, vous vous êtes noyée à six kilomètres d'ici. Sur la photo, vous êtes encore là.")),
     narr('Derrière la vitre du pavillon, une silhouette. Impossible de dire qui.'),
@@ -277,7 +362,7 @@ const nodes: Record<string, StoryNode> = {
 
   // ─────────────────────────────── Scène 4 — Le pavillon
   ...seq('s4', pavillon('nuit'), [
-    title('Scène 4', 'Le pavillon'),
+    title('Scène 5', 'Le pavillon'),
     narr('Le jardin commun est désert. La piscine éclaire le pavillon par en dessous, comme une scène de théâtre vide.'),
     narr('La porte est verrouillée. À côté de la poignée, un boîtier à code tout neuf. Quatre chiffres.'),
     keypad('Entrez le code du pavillon', '1403', [
@@ -336,7 +421,7 @@ const nodes: Record<string, StoryNode> = {
 
   // ─────────────────────────────── Scène 5 — Le choix
   ...seq('s5', allee('nuit'), [
-    title('Scène 5', 'Le choix'),
+    title('Scène 6', 'Le choix'),
     narr('Chez vous, sur la table de la cuisine : le vieux téléphone dans son sachet. Il est mort, mais la carte SIM est intacte.'),
     narr("Quelqu'un l'a caché au lieu de le jeter. Pour se protéger, ou pour garder une preuve contre quelqu'un d'autre."),
     narr('Si vous agissez trop tôt, vous perdez votre couverture. Si vous attendez, celui qui l’a caché finira par s’apercevoir qu’il a disparu.'),
@@ -352,6 +437,10 @@ const nodes: Record<string, StoryNode> = {
     narr('Il est une heure du matin quand Paul ouvre la porte, en peignoir, le visage gris.'),
     enter({ id: 'paul', pos: 'centre', mood: 'trouble' }),
     ...say('paul', '{alias} ? Qu’est-ce que…'),
+    ...iff({ flag: 'flirt_haut' }, [
+      narr('Il vous regarde comme on regarde un message auquel on a trop répondu.'),
+      ...say('paul', 'Après ce que je vous ai écrit, j’ai cru que… Excusez-moi.', 'trouble'),
+    ]),
     narr('Vous posez le sachet sur le marbre de l’entrée. Il le reconnaît immédiatement. Ça se voit.'),
     ...say('paul', 'Où avez-vous trouvé ça ?'),
     choice('Que répondez-vous ?', [
@@ -404,12 +493,17 @@ const nodes: Record<string, StoryNode> = {
     choice('Que répondez-vous ?', [
       { id: 'dormais', label: "Je dormais. J'ai pris un somnifère.", tone: 'mensonge', effects: { flags: { menti_beatrice: true } }, next: 'b.dormais' },
       { id: 'alban', label: 'Alban vous raconte tout ce qu’il voit ?', tone: 'retourner', effects: { rel: { beatrice: -1 }, clues: ['alban-beatrice'] }, next: 'b.alban' },
+      { id: 'enveloppe', label: 'Belle nuit pour une enveloppe, Béatrice.', tone: 'retourner', when: { flag: 'photo_bea_alban' }, effects: { rel: { beatrice: -1 }, exposure: 1, flags: { pression_beatrice: true }, log: 'Vous avez fait comprendre à Béatrice que vous l’aviez vue avec Alban.' }, next: 'b.enveloppe' },
       { id: 'promenade', label: "Je suis allée marcher. J'avais besoin d'air.", tone: 'franchise', effects: { rel: { beatrice: 1 } }, next: 'b.promenade' },
     ]),
   ]),
   ...seq('b.dormais', { decor: 'allee', time: 'jour', cast: [{ id: 'beatrice', pos: 'centre', mood: 'sourire' }] }, [
     ...say('beatrice', 'Tant mieux. Les nuits sont longues, ici.'),
     ...iff({ flag: 'surprise_par_alban' }, withFx({ exposure: 1 }, narr('Son sourire ne bouge pas, mais quelque chose se ferme derrière. Elle sait que vous mentez.'))),
+  ], 'b.fin'),
+  ...seq('b.enveloppe', { decor: 'allee', time: 'jour', cast: [{ id: 'beatrice', pos: 'centre', mood: 'froid' }] }, [
+    ...say('beatrice', 'Je ne vois pas de quoi vous parlez.'),
+    narr('Son sourire ne bouge pas. Ses mains, si : elle serre le sachet de croissants à le déchirer.'),
   ], 'b.fin'),
   ...seq('b.alban', { decor: 'allee', time: 'jour', cast: [{ id: 'beatrice', pos: 'centre', mood: 'froid' }] }, [
     ...say('beatrice', 'Alban me doit beaucoup. Tout le monde, ici, me doit un peu quelque chose.'),
@@ -495,9 +589,14 @@ export const episode1: Story = {
     registre: { id: 'registre', title: 'Le registre des clés', text: '21 juin : « Clé rendue — 23 h 30 — P.D. », puis « 00 h 40 — A.R. ».' },
     'telephone-alice': { id: 'telephone-alice', title: 'Le téléphone d’Alice', text: 'Caché dans le local technique du pavillon depuis dix ans. Carte SIM intacte.' },
     'veste-verte': { id: 'veste-verte', title: 'La veste verte', text: 'Alban faisait une ronde au pavillon, la nuit où vous y êtes entrée.' },
+    'bea-alban': { id: 'bea-alban', title: 'Béatrice et Alban, la nuit', text: 'Très proches, à l’entrée du domaine, passé minuit. Elle lui remet une enveloppe. Liaison, ou dette ?' },
+    'bea-alban-vu': { id: 'bea-alban-vu', title: 'Deux silhouettes', text: 'Photo floue : vous avez reconnu Béatrice et Alban, très proches, sous le dernier lampadaire. Pas de preuve.' },
+    'paul-trouble': { id: 'paul-trouble', title: 'Paul vous trouve « familière »', text: 'Paul ne vous a pas reconnue, mais quelque chose en vous le trouble. Il vous invite chez lui, à l’atelier.' },
     'alban-beatrice': { id: 'alban-beatrice', title: 'Alban et Béatrice', text: '« Alban me doit beaucoup », dit Béatrice.' },
   },
   photos: {
+    'bea-alban': { title: 'Photo prise à la fenêtre', caption: 'Entrée du domaine — 00:21' },
+    'bea-alban-floue': { title: 'Photo floue', caption: 'Entrée du domaine — 00:21 (floue)' },
     'pavillon-2347': { title: 'Photo reçue', caption: 'Pavillon de la piscine — 21.06.2016 — 23:47' },
   },
   endings: {

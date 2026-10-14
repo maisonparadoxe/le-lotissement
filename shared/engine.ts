@@ -2,7 +2,7 @@
 // Il tourne côté serveur, qui fait autorité ; l'écran principal et le
 // téléphone ne sont que deux vues du même état de partie.
 
-import type { CharId, Cond, Effects, ExploreNode, Spot, Story, StoryNode } from './types.ts';
+import type { CharId, Cond, Effects, ExploreNode, FlirtTone, FlirtVariants, Spot, Story, StoryNode } from './types.ts';
 
 export type PhoneMode =
   | 'attente'
@@ -13,6 +13,8 @@ export type PhoneMode =
   | 'digicode'
   | 'action'
   | 'saisie'
+  | 'viseur'
+  | 'flirt'
   | 'fin';
 
 export const PHONE_MODE_LABEL: Record<PhoneMode, string> = {
@@ -24,6 +26,8 @@ export const PHONE_MODE_LABEL: Record<PhoneMode, string> = {
   digicode: 'Digicode',
   action: 'Action',
   saisie: 'Terminal de saisie',
+  viseur: 'Viseur photo',
+  flirt: 'Messages · tension',
   fin: 'Bilan',
 };
 
@@ -52,6 +56,8 @@ export interface GameState {
   nav: { cursor: number };
   keypad: { attempts: number; error: boolean };
   qte?: { startedAt: number; deadline: number };
+  /** Échange de séduction en cours : tour, tension (0-100), terminé ?, dernier envoi. */
+  flirt?: { round: number; tension: number; done: boolean; at: number };
   settings: { extendedTime: boolean };
 }
 
@@ -69,9 +75,27 @@ export type Input =
   | { type: 'sms-dismiss' }
   | { type: 'keypad-submit'; code: string }
   | { type: 'qte-success' }
-  | { type: 'input-submit'; text: string };
+  | { type: 'input-submit'; text: string }
+  | { type: 'vf-shot'; quality: 'nette' | 'floue' | 'rate' }
+  | { type: 'flirt-send'; tone: FlirtTone }
+  | { type: 'flirt-end' };
 
 const ADVANCE_DEBOUNCE_MS = 250;
+const FLIRT_SEND_DEBOUNCE_MS = 700;
+export const FLIRT_START = 30;
+export const FLIRT_DELTA: Record<FlirtTone, number> = { froid: -20, neutre: 5, joueuse: 20 };
+export const FLIRT_HIGH = 65;
+export const FLIRT_LOW = 25;
+const FLIRT_TONES = Object.keys(FLIRT_DELTA);
+
+export function flirtLevel(tension: number): 'high' | 'mid' | 'low' {
+  return tension >= FLIRT_HIGH ? 'high' : tension <= FLIRT_LOW ? 'low' : 'mid';
+}
+
+function flirtText(v: string | FlirtVariants, tension: number): string {
+  if (typeof v === 'string') return v;
+  return v[flirtLevel(tension)];
+}
 const QTE_GRACE_MS = 500;
 export const ALIAS_MAX = 24;
 
@@ -119,6 +143,10 @@ export function phoneMode(story: Story, s: GameState): PhoneMode {
       return 'action';
     case 'input':
       return 'saisie';
+    case 'viewfinder':
+      return 'viseur';
+    case 'flirt':
+      return 'flirt';
     case 'end':
       return 'fin';
     default:
@@ -187,12 +215,18 @@ function enterNode(story: Story, s: GameState, id: string, now: number): void {
     s.nav.cursor = 0;
     s.keypad = { attempts: 0, error: false };
     s.qte = undefined;
+    s.flirt = undefined;
     s.phone = { opened: false };
     if (node.type === 'sms') {
       const thread = (s.sms[node.thread] ??= { contact: node.contact, messages: [] });
       for (const m of node.incoming) {
         if (evalCond(m.when, s)) thread.messages.push({ from: 'eux', text: m.text && fmt(m.text, s), photo: m.photo });
       }
+    }
+    if (node.type === 'flirt') {
+      const thread = (s.sms[node.thread] ??= { contact: node.contact, messages: [] });
+      s.flirt = { round: 0, tension: FLIRT_START, done: false, at: now };
+      thread.messages.push({ from: 'eux', text: fmt(flirtText(node.rounds[0].incoming, FLIRT_START), s) });
     }
     if (node.type === 'qte') {
       const win = s.settings.extendedTime ? node.extendedWindow : node.window;
@@ -324,6 +358,46 @@ export function applyInput(story: Story, prev: GameState, input: Input, now: num
       return s;
     }
 
+    case 'viewfinder': {
+      if (input.type !== 'vf-shot') return null;
+      const outcome = (['nette', 'floue', 'rate'] as const).includes(input.quality) ? node[input.quality] : null;
+      if (!outcome) return null;
+      applyEffects(s, outcome.effects);
+      enterNode(story, s, outcome.next, now);
+      return s;
+    }
+
+    case 'flirt': {
+      const f = s.flirt;
+      if (!f) return null;
+      if (input.type === 'sms-open') {
+        s.phone.opened = true;
+        return s;
+      }
+      const thread = s.sms[node.thread];
+      if (input.type === 'flirt-send') {
+        if (f.done || !FLIRT_TONES.includes(input.tone) || now - f.at < FLIRT_SEND_DEBOUNCE_MS) return null;
+        thread.messages.push({ from: 'moi', text: fmt(node.rounds[f.round].replies[input.tone], s) });
+        f.tension = clamp(f.tension + FLIRT_DELTA[input.tone], 0, 100);
+        f.round++;
+        f.at = now;
+        if (f.round < node.rounds.length) {
+          thread.messages.push({ from: 'eux', text: fmt(flirtText(node.rounds[f.round].incoming, f.tension), s) });
+        } else {
+          thread.messages.push({ from: 'eux', text: fmt(flirtText(node.outro, f.tension), s) });
+          f.done = true;
+        }
+        return s;
+      }
+      if (input.type === 'flirt-end') {
+        if (!f.done) return null;
+        applyEffects(s, node.outcome[flirtLevel(f.tension)]);
+        enterNode(story, s, node.next, now);
+        return s;
+      }
+      return null;
+    }
+
     case 'end':
       return null;
   }
@@ -376,6 +450,18 @@ export function validateStory(story: Story): string[] {
       case 'qte':
         has(n.success, n.id);
         has(n.fail, n.id);
+        break;
+      case 'viewfinder':
+        for (const o of [n.nette, n.floue, n.rate]) {
+          has(o.next, n.id);
+          for (const c of o.effects?.clues ?? []) if (!story.clues[c]) errors.push(`${n.id} : indice ${c} inconnu`);
+        }
+        break;
+      case 'flirt':
+        has(n.next, n.id);
+        if (!n.rounds.length) errors.push(`${n.id} : flirt sans tour`);
+        for (const e of Object.values(n.outcome))
+          for (const c of e.clues ?? []) if (!story.clues[c]) errors.push(`${n.id} : indice ${c} inconnu`);
         break;
       case 'branch':
         has(n.then, n.id);
