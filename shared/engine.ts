@@ -64,6 +64,7 @@ export interface GameState {
 export type Input =
   | { type: 'start' }
   | { type: 'restart' }
+  | { type: 'menu' }
   | { type: 'settings'; extendedTime: boolean }
   | { type: 'advance' }
   | { type: 'choose'; option: string }
@@ -258,6 +259,7 @@ export function applyInput(story: Story, prev: GameState, input: Input, now: num
     s.started = true;
     return s;
   }
+  if (input.type === 'menu') return initialState(story, now, prev.settings);
   if (input.type === 'settings') {
     const s = structuredClone(prev);
     s.settings.extendedTime = !!input.extendedTime;

@@ -1071,3 +1071,101 @@ button {
 .flirt-notice.tension-high {
   border-left-color: #d9443f;
 }
+
+/* ───────────── Menu principal */
+.main-menu {
+  display: grid;
+  gap: 0.3cqw;
+  margin-top: 0.6cqw;
+  min-width: 24cqw;
+}
+
+.menu-item {
+  padding: 0.9cqw 2cqw;
+  border: 0;
+  border-top: 0.1cqw solid rgba(243, 237, 226, 0.18);
+  background: transparent;
+  color: var(--ivoire);
+  font-family: var(--serif);
+  font-size: 2.4cqw;
+  letter-spacing: 0.06em;
+  transition:
+    background 0.2s,
+    letter-spacing 0.2s;
+}
+
+.menu-item:last-of-type {
+  border-bottom: 0.1cqw solid rgba(243, 237, 226, 0.18);
+}
+
+.menu-item.primary {
+  color: var(--lumiere-2);
+}
+
+.menu-item:hover,
+.menu-item:focus-visible {
+  background: linear-gradient(90deg, transparent, rgba(122, 36, 51, 0.7), transparent);
+  letter-spacing: 0.1em;
+  outline: none;
+}
+
+.menu-status {
+  margin: 0.8cqw 0 0;
+  font-size: 1cqw;
+  letter-spacing: 0.1em;
+  color: #9fd2a6;
+}
+
+.menu-status.muted {
+  color: var(--gris-bleu-2);
+}
+
+.options-panel {
+  display: grid;
+  gap: 1.6cqw;
+  justify-items: center;
+  padding: 2cqw 3cqw;
+  background: rgba(26, 20, 22, 0.85);
+  border: 0.1cqw solid rgba(243, 237, 226, 0.15);
+}
+
+.options-panel h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 2.6cqw;
+}
+
+.seg-row {
+  display: grid;
+  gap: 0.6cqw;
+  justify-items: center;
+  font-size: 1.1cqw;
+  color: #d9cfbf;
+}
+
+.seg {
+  display: flex;
+}
+
+.seg button {
+  padding: 0.5cqw 1.2cqw;
+  border: 0.1cqw solid rgba(243, 237, 226, 0.35);
+  background: transparent;
+  color: var(--ivoire);
+  font-size: 1cqw;
+}
+
+.seg button + button {
+  border-left: 0;
+}
+
+.seg button.on {
+  background: var(--bordeaux-2);
+  border-color: var(--bordeaux-2);
+}
+
+.menu-panel .seg-row {
+  justify-items: start;
+  font-size: 1.1cqw;
+}

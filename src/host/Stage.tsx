@@ -19,9 +19,16 @@ export interface LiveFx {
 
 export const LIVE_DEFAULT: LiveFx = { keypadEntry: '', qteProgress: 0, navHover: null, vf: VIEW_DEFAULT };
 
+export type TextSpeed = 'normale' | 'rapide' | 'instantanee';
+const SPEED_MS: Record<TextSpeed, number> = { normale: 22, rapide: 8, instantanee: 0 };
+
 function Typewriter({ text, speed = 22 }: { text: string; speed?: number }) {
-  const [n, setN] = useState(0);
+  const [n, setN] = useState(speed === 0 ? text.length : 0);
   useEffect(() => {
+    if (speed === 0) {
+      setN(text.length);
+      return;
+    }
     setN(0);
     const id = setInterval(() => setN((x) => (x >= text.length ? (clearInterval(id), x) : x + 1)), speed);
     return () => clearInterval(id);
@@ -36,7 +43,19 @@ function Typewriter({ text, speed = 22 }: { text: string; speed?: number }) {
   );
 }
 
-export function Stage({ story, state, live, serverOffset }: { story: Story; state: GameState; live: LiveFx; serverOffset: number }) {
+export function Stage({
+  story,
+  state,
+  live,
+  serverOffset,
+  textSpeed = 'normale',
+}: {
+  story: Story;
+  state: GameState;
+  live: LiveFx;
+  serverOffset: number;
+  textSpeed?: TextSpeed;
+}) {
   const node = currentNode(story, state);
   const { stage } = node;
   const speaker = node.type === 'line' ? node.speaker : undefined;
@@ -89,7 +108,7 @@ export function Stage({ story, state, live, serverOffset }: { story: Story; stat
           {node.memory && <p className="who">Souvenir · fragmentaire</p>}
           {node.speaker && <p className="who">{node.speaker === 'heroine' ? state.alias : story.characters[node.speaker].name}</p>}
           <p className="text">
-            <Typewriter text={fmt(node.text, state)} />
+            <Typewriter text={fmt(node.text, state)} speed={SPEED_MS[textSpeed]} />
           </p>
         </div>
       )}

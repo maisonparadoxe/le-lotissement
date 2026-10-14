@@ -14,8 +14,8 @@ npm run build
 npm start          # http://localhost:3000
 ```
 
-1. Ouvrez `http://localhost:3000` sur l'ordinateur, de préférence en plein écran.
-2. Scannez le QR code avec le téléphone. **Les deux appareils doivent être sur le même réseau Wi-Fi.** Le QR code pointe vers l'adresse réseau locale de l'ordinateur, pas vers `localhost`.
+1. Ouvrez `http://localhost:3000` sur l'ordinateur, de préférence en plein écran. Le menu principal propose « Nouvelle partie » et « Options » (temps élargi pour les actions, vitesse du texte).
+2. Dans « Nouvelle partie », scannez le QR code avec le téléphone. **Les deux appareils doivent être sur le même réseau Wi-Fi.** Le QR code pointe vers l'adresse réseau locale de l'ordinateur, pas vers `localhost`.
 3. Appuyez sur « Commencer » sur le téléphone.
 
 Pour développer : `npm run dev` (Vite en middleware, rechargement à chaud).
@@ -42,6 +42,8 @@ Pour journaliser les parties de test (section 11) : `PLAYTEST_LOG=1 npm start`. 
 | Dossier | Enquête | Indices et messages déjà obtenus, réglages |
 
 Chaque transformation est annoncée : animation et vibration sur le téléphone, bandeau « Votre téléphone devient : … » sur l'écran.
+
+**Pendant la partie**, le bouton Menu (en haut à droite) permet de relier un autre téléphone, de régler le texte, de revenir au menu principal ou de recommencer l'épisode.
 
 **Mode sans téléphone** : depuis l'accueil ou le menu, « Jouer sans téléphone » affiche la manette dans un cadre à côté de la scène. Ce mode sert aussi de point de comparaison pour la validation (« utilité perçue du téléphone par rapport à une version où les choix se font sur l'ordinateur »).
 

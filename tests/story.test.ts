@@ -220,3 +220,15 @@ test('le flirt : un double appui trop rapide est ignoré', () => {
   assert.equal(applyInput(story, un, { type: 'flirt-send', tone: 'neutre' }, (un.flirt?.at ?? 0) + 100), null);
   assert.equal(applyInput(story, s, { type: 'flirt-send', tone: 'abc' as never }, s.enteredAt + 5000), null);
 });
+
+test('le retour au menu principal remet la partie à zéro et garde les réglages', () => {
+  let s = initialState(story, T0, { extendedTime: true });
+  s = applyInput(story, s, { type: 'start' }, T0)!;
+  for (let i = 0; i < 12; i++) s = forward(s);
+  assert.notEqual(s.nodeId, story.start);
+  const menu = applyInput(story, s, { type: 'menu' }, s.enteredAt + 1000)!;
+  assert.equal(menu.started, false);
+  assert.equal(menu.nodeId, story.start);
+  assert.equal(menu.settings.extendedTime, true);
+  assert.deepEqual(menu.clues, []);
+});

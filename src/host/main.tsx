@@ -6,9 +6,9 @@ import type { ControllerStatus, Fx, ServerMsg } from '../../shared/protocol.ts';
 import { episode1 } from '../../shared/story/episode1.ts';
 import { Decor } from '../common/art/Decor.tsx';
 import { unlockAudio } from '../common/feedback.ts';
-import { useLink, type Link } from '../common/net.ts';
+import { storage, useLink, type Link } from '../common/net.ts';
 import { ControllerView } from '../controller/ControllerView.tsx';
-import { LIVE_DEFAULT, Stage, type LiveFx } from './Stage.tsx';
+import { LIVE_DEFAULT, Stage, type LiveFx, type TextSpeed } from './Stage.tsx';
 import '../styles/host.css';
 import '../styles/controller.css';
 
@@ -56,6 +56,26 @@ function PairingPanel({ session, status, compact = false }: { session: HostSessi
   );
 }
 
+function TextSpeedChoice({ value, onChange }: { value: TextSpeed; onChange: (v: TextSpeed) => void }) {
+  const items: { id: TextSpeed; label: string }[] = [
+    { id: 'normale', label: 'Normale' },
+    { id: 'rapide', label: 'Rapide' },
+    { id: 'instantanee', label: 'Instantanée' },
+  ];
+  return (
+    <div className="seg-row">
+      <span>Vitesse du texte</span>
+      <div className="seg" role="radiogroup" aria-label="Vitesse du texte">
+        {items.map((i) => (
+          <button key={i.id} role="radio" aria-checked={value === i.id} className={value === i.id ? 'on' : ''} onClick={() => onChange(i.id)}>
+            {i.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const [session, setSession] = useState<HostSession | null>(null);
   const [state, setState] = useState<GameState | null>(null);
@@ -63,6 +83,15 @@ function App() {
   const [offset, setOffset] = useState(0);
   const [solo, setSolo] = useState(false);
   const [menu, setMenu] = useState(false);
+  const [screen, setScreen] = useState<'menu' | 'pairing' | 'options'>('menu');
+  const [textSpeed, setTextSpeed] = useState<TextSpeed>(() => {
+    const v = storage.get('lotissement.vitesse');
+    return v === 'rapide' || v === 'instantanee' ? v : 'normale';
+  });
+  const chooseSpeed = (v: TextSpeed) => {
+    setTextSpeed(v);
+    storage.set('lotissement.vitesse', v);
+  };
   const [toast, setToast] = useState<string | null>(null);
   const [live, setLive] = useState<LiveFx>(LIVE_DEFAULT);
 
@@ -124,7 +153,7 @@ function App() {
   const prevMode = useRef<PhoneMode | null>(null);
   useEffect(() => {
     if (!mode) return;
-    if (prevMode.current && prevMode.current !== mode && mode !== 'telecommande' && mode !== 'fin') {
+    if (prevMode.current && prevMode.current !== mode && mode !== 'telecommande' && mode !== 'fin' && mode !== 'attente') {
       setToast(`Votre téléphone devient : ${PHONE_MODE_LABEL[mode]}`);
       const t = setTimeout(() => setToast(null), 2600);
       prevMode.current = mode;
@@ -155,7 +184,7 @@ function App() {
     <div className={`host ${solo ? 'with-solo' : ''}`} onPointerDown={unlockAudio}>
       <div className="frame">
         {state && state.started ? (
-          <Stage story={story} state={state} live={live} serverOffset={offset} />
+          <Stage story={story} state={state} live={live} serverOffset={offset} textSpeed={textSpeed} />
         ) : (
           <div className="stage lobby">
             <div className="decor-layer blurred">
@@ -169,31 +198,60 @@ function App() {
                 <br />
                 Dix ans de silence. Une identité empruntée.
               </p>
-              {session && ctrl !== 'connectee' && !solo && <PairingPanel session={session} status={ctrl} />}
-              {ctrl === 'connectee' && !solo && (
-                <div className="lobby-ready">
-                  <p className="ok">● Téléphone connecté</p>
-                  <p>Appuyez sur « Commencer » sur votre téléphone.</p>
+              {screen === 'menu' && (
+                <nav className="main-menu" aria-label="Menu principal">
+                  <button className="menu-item primary" autoFocus onClick={() => setScreen('pairing')}>
+                    Nouvelle partie
+                  </button>
+                  <button className="menu-item" onClick={() => setScreen('options')}>
+                    Options
+                  </button>
+                  {!solo && ctrl === 'connectee' && <p className="menu-status">● Téléphone connecté</p>}
+                  {solo && <p className="menu-status muted">Mode sans téléphone</p>}
+                </nav>
+              )}
+
+              {screen === 'pairing' && (
+                <>
+                  {session && ctrl !== 'connectee' && !solo && <PairingPanel session={session} status={ctrl} />}
+                  {ctrl === 'connectee' && !solo && (
+                    <div className="lobby-ready">
+                      <p className="ok">● Téléphone connecté</p>
+                      <p>Appuyez sur « Commencer » sur votre téléphone.</p>
+                    </div>
+                  )}
+                  {solo && (
+                    <div className="lobby-ready">
+                      <p>Utilisez la manette, à droite de l’écran, puis « Commencer ».</p>
+                    </div>
+                  )}
+                  <div className="lobby-actions">
+                    <button className="ghost-btn" onClick={() => setSolo((v) => !v)}>
+                      {solo ? 'Utiliser un téléphone' : 'Jouer sans téléphone'}
+                    </button>
+                    <button className="ghost-btn" onClick={() => setScreen('menu')}>
+                      Retour
+                    </button>
+                  </div>
+                </>
+              )}
+
+              {screen === 'options' && (
+                <div className="options-panel">
+                  <h2>Options</h2>
+                  {state && (
+                    <label className="toggle light">
+                      <input type="checkbox" checked={state.settings.extendedTime} onChange={(e) => send({ type: 'settings', extendedTime: e.target.checked })} />
+                      <span className="toggle-track" />
+                      <span>Temps élargi pour les actions</span>
+                    </label>
+                  )}
+                  <TextSpeedChoice value={textSpeed} onChange={chooseSpeed} />
+                  <button className="ghost-btn" onClick={() => setScreen('menu')}>
+                    Retour
+                  </button>
                 </div>
               )}
-              <div className="lobby-actions">
-                {state && (
-                  <label className="toggle light">
-                    <input type="checkbox" checked={state.settings.extendedTime} onChange={(e) => send({ type: 'settings', extendedTime: e.target.checked })} />
-                    <span className="toggle-track" />
-                    <span>Temps élargi pour les actions</span>
-                  </label>
-                )}
-                {!solo ? (
-                  <button className="ghost-btn" onClick={() => setSolo(true)}>
-                    Jouer sans téléphone
-                  </button>
-                ) : (
-                  <button className="ghost-btn" onClick={() => setSolo(false)}>
-                    Utiliser un téléphone
-                  </button>
-                )}
-              </div>
               {net !== 'connecte' && <p className="small warn">Connexion au serveur…</p>}
             </div>
           </div>
@@ -253,6 +311,19 @@ function App() {
                 <span>Temps élargi pour les actions</span>
               </label>
             )}
+            <TextSpeedChoice value={textSpeed} onChange={chooseSpeed} />
+            <button
+              className="ghost-btn"
+              onClick={() => {
+                if (confirm('Revenir au menu principal ? La partie en cours sera perdue.')) {
+                  send({ type: 'menu' });
+                  setMenu(false);
+                  setScreen('menu');
+                }
+              }}
+            >
+              Retour au menu principal
+            </button>
             <button
               className="ghost-btn danger"
               onClick={() => {
