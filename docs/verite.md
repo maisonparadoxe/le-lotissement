@@ -22,7 +22,10 @@ Responsabilité collective, en chaîne. Personne n'a voulu tuer Alice : chacun a
 | Béatrice | Le détournement du syndic ; elle a laissé Alice sans secours | Sa place, sa réputation, sa liberté |
 | Alban | Il a déplacé la voiture ; il a sauvé Alice sans le dire | Son emploi, sa dette envers Béatrice |
 
+## Pourquoi Alice revient maintenant
+Alice s'est réveillée du coma il y a environ un an, puis a passé des mois en rééducation et en opérations. Elle revient parce qu'elle a reçu un SMS anonyme sur son ancien numéro (resté actif sans qu'elle le sache), avec la photo de 23 h 47. Quelqu'un dans le lotissement sait qu'elle est vivante, ou veut qu'on s'intéresse à cette nuit-là. Elle prépare son retour pendant des mois, avec de faux papiers, parce qu'elle sait qu'on lui veut peut-être du mal.
+À répercuter dans l'épisode 1 : le prologue doit mentionner ce premier message ; les SMS de la scène 3 sont la suite d'un contact déjà établi.
+
 ## Questions encore ouvertes
 - Qui est l'expéditeur des SMS anonymes (mystère de la saison) ?
-- Pourquoi Alice revient-elle maintenant ?
 - Que sait Lou, qui avait 7 ans cette nuit-là ?
