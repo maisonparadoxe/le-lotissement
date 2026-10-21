@@ -35,6 +35,13 @@ Une dominante environ aux deux tiers de la tenue (vêtement principal, foulard, 
 | Alban | Brun rouille (terre) |
 | Lou (plus tard) | Turquoise (proposition) |
 
+## Différenciation des personnages (validé)
+- **Alice** : visage anguleux, mâchoire marquée, pommettes hautes, sourcils épais, cheveux courts ébouriffés brun foncé, peau claire à reflet olive, cicatrice de trachéotomie au cou. 41 ans.
+- **Béatrice** : visage rond et doux, petit nez, sourcils fins, cheveux blonds bouclés aux épaules, peau très claire, joues roses, perles. 50 ans.
+- **Monica** : visage long et étroit, nez fin, sourcils très arqués, cheveux noirs très longs et lisses, **peau olive mate**, rouge à lèvres foncé, bijoux dorés. 45 ans.
+- **Paul** : mâchoire carrée, cheveux bruns grisonnants aux tempes, barbe de trois jours poivre et sel, yeux noisette. 45 ans.
+- **Alban** : visage creusé et marqué, cheveux et barbe gris courts, peau halée. 58 ans. Rendu rugueux de la version de nuit ; version de jour propre.
+
 ## En discussion, pas encore validé
 ### Moteur d'affichage
 Godot comme écran principal sur PC, le téléphone restant une page web reliée par QR code. Recommandation : garder le serveur actuel comme relais (histoire, téléphone, sécurité), Godot s'y connecte et affiche la scène. Prototype d'abord sur le style actuel, avec lumière, mouvement et un viseur au flou réaliste.
