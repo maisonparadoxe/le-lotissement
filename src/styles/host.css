@@ -1169,3 +1169,37 @@ button {
   justify-items: start;
   font-size: 1.1cqw;
 }
+
+/* ───────────── Réveil (moniteur cardiaque) */
+.hb-pulse {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(43, 214, 123, 0.16), transparent 65%);
+  animation: hb-pulse 0.6s ease-out both;
+}
+
+@keyframes hb-pulse {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.hb-prompt {
+  background: rgba(2, 4, 3, 0.75);
+}
+
+/* ───────────── Miroir */
+.mirror-stage {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 8, 9, 0.55);
+}
+
+.mirror-stage .polaroid {
+  position: absolute;
+  left: 50%;
+  top: 6%;
+  width: 42%;
+  margin-left: -21%;
+  transition: opacity 0.4s ease;
+}

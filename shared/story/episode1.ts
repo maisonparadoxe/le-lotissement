@@ -9,11 +9,13 @@ import {
   enter,
   explore,
   flirt,
+  heartbeat,
   iff,
   input,
   keypad,
   leave,
   memory,
+  mirror,
   narr,
   qte,
   say,
@@ -28,21 +30,39 @@ import {
 const allee = (time: Stage['time']): Stage => ({ decor: 'allee', time, cast: [] });
 const salon = (time: Stage['time']): Stage => ({ decor: 'salon', time, cast: [] });
 const pavillon = (time: Stage['time']): Stage => ({ decor: 'pavillon', time, cast: [] });
+const hopital = (time: Stage['time']): Stage => ({ decor: 'hopital', time, cast: [] });
 
 const nodes: Record<string, StoryNode> = {
-  // ─────────────────────────────── Prologue
-  ...seq('prologue', allee('nuit'), [
+  // ─────────────────────────────── Prologue — le réveil
+  ...seq('prologue', hopital('nuit'), [
     title('Épisode 1', 'Bellécourt'),
+    narr('Il y a un an.'),
+    narr('Le noir. Pas de corps, pas de nom. Seulement un son, très loin, qui revient à intervalles réguliers.'),
+    stage({ time: 'interieur' }),
+    heartbeat({
+      prompt: 'Quelque part, une machine compte vos battements.',
+      instruction: 'Touchez l’écran sur chaque bip, au rythme du cœur, pour remonter.',
+      beats: 8,
+      bpm: 52,
+    }),
+    narr('Un plafond blanc. Un néon qui grésille. Une silhouette penchée sur vous, floue, qui se redresse d’un coup et se met à courir.'),
+    narr('« Elle revient ! Appelez le médecin : la patiente du 21 juin revient ! »'),
+    narr('La patiente du 21 juin. C’est ainsi qu’on vous appelle ici depuis neuf ans : une femme sans papiers, déposée une nuit devant les urgences, que personne n’est jamais venu réclamer.'),
+    narr('Puis viennent les mois de rééducation. Réapprendre à marcher, à avaler, à parler, d’une voix plus grave, éraillée par l’intubation. Sept opérations pour reconstruire un visage.'),
+    narr('Le jour où l’on retire les derniers pansements, une soignante vous tend un miroir.'),
+    mirror({ prompt: 'Le miroir', instruction: 'Essuyez la buée du bout du doigt.', photo: 'alice-2016' }),
+    narr('Une inconnue. Des traits anguleux, des cheveux courts, une cicatrice pâle à la base du cou. Les médecins disent que c’est une chance. Vous n’êtes pas sûre de ce qu’ils entendent par là.'),
+    narr('La jeune femme en robe verte d’un soir de Saint-Jean, plus personne ne la verra. Pas même vous.'),
+    stage(allee('nuit')),
     narr("Dix ans. C'est le temps qu'il a fallu au monde pour vous oublier."),
-    narr('Le coma, puis les opérations. Sept interventions pour reconstruire un visage que vous ne reconnaissez toujours pas dans le miroir.'),
-    narr("Votre voix aussi a changé : plus grave, éraillée par des mois d'intubation. Les médecins disent que c'est une chance. Vous n'êtes pas sûre de ce qu'ils entendent par là."),
     memory("De la nuit du 21 juin, il ne reste que des éclats. De l'eau froide. Une lumière bleue. Une voix qui disait : « Laisse-la. »"),
     narr("Pour tout le monde, Alice Marchal s'est noyée dans l'étang du Moulin. On n'a jamais retrouvé le corps."),
-    narr("Sur le bail de la maison n°9, l'agence a inscrit un autre nom."),
     narr("Il y a trois mois, une enveloppe sans expéditeur est arrivée à la clinique, adressée à « la patiente du 21 juin ». Dedans : une photo prise de nuit, une carte SIM, et trois mots. « Gardez-la allumée. »"),
     narr("Depuis, votre téléphone a deux lignes : la vôtre, et celle de l'inconnu. C'est cette photo qui vous a décidée à revenir."),
+    narr('La police ? Vous êtes légalement morte. Vos souvenirs ne sont que des éclats, les gendarmes ont conclu à un accident, et vous allez vivre sous de faux papiers. Sans preuve, personne ne vous croira. On vous poursuivra.'),
     input('Quel nom porte votre nouvelle identité ?', ['Natasha Lusky', 'Nora Vidal', 'Juliette Armand']),
     narr("{alias}. Traductrice, quarante et un ans, sans enfant, sans passé. Le nom d'une femme qui n'en avait plus besoin, et des papiers qui ont coûté tout ce qui vous restait."),
+    narr('Le n°9, la maison où vous viviez seule, était à louer. Sur le bail, l’agence a inscrit {alias}.'),
   ], 's1'),
 
   // ─────────────────────────────── Scène 1 — Le retour
@@ -105,7 +125,9 @@ const nodes: Record<string, StoryNode> = {
     enter({ id: 'beatrice', pos: 'centre', mood: 'sourire' }),
     ...say('beatrice', 'Vous devez être {alias} ! Béatrice Vasseur, la maison juste à côté. Et, pour mes péchés, présidente de l’association syndicale.'),
     ...say('beatrice', "Je vous ai apporté de la confiture d'abricots. C'est la tradition, ici : on accueille les gens."),
-    narr("Béatrice. Votre meilleure amie, autrefois. Elle vous serre la main un peu trop longtemps, et ses yeux font l'inventaire : chaussures, sac, mains, visage."),
+    withFx({ clues: ['etiquette'] }, narr('Un carré de vichy sur le couvercle. Sur l’étiquette, à l’encre bleue, une écriture penchée aux boucles très rondes : « Abricots — juin ». Vous l’avez vue mille fois.')),
+    narr("Béatrice. Votre meilleure amie, autrefois. Elle présidait l'association, vous en teniez les comptes : trésorière bénévole, deux soirs par mois, à sa table de cuisine."),
+    narr("Elle vous serre la main un peu trop longtemps, et ses yeux font l'inventaire : chaussures, sac, mains, visage."),
     ...say('beatrice', "Alors, qu'est-ce qui amène quelqu'un comme vous à Bellécourt ? Personne ne vient ici par hasard."),
     choice('Que dites-vous à Béatrice ?', [
       { id: 'convalescence', label: "J'avais besoin de calme. Je sors d'une longue convalescence.", tone: 'franchise', effects: { rel: { beatrice: 1 }, exposure: 1, flags: { dit_convalescence: true }, log: 'Vous avez parlé de votre convalescence à Béatrice.' }, next: 's1.beatrice.convalescence' },
@@ -194,9 +216,12 @@ const nodes: Record<string, StoryNode> = {
 
   ...seq('s2.diner', { decor: 'salon', time: 'soir', cast: [{ id: 'monica', pos: 'gauche', mood: 'neutre' }, { id: 'beatrice', pos: 'centre', mood: 'sourire' }, { id: 'paul', pos: 'droite', mood: 'neutre' }] }, [
     narr('Béatrice arrive en retard, avec des excuses que personne ne croit. Le dîner avance : le syndic, les travaux, les impôts, les enfants des autres.'),
-    ...say('beatrice', '… et le pavillon de la piscine enfin rénové ! Dix ans qu’on en parlait.'),
+    narr('Sur la nappe, le téléphone de Monica s’allume. « Lou ». Elle le retourne, écran contre la table.'),
+    ...say('monica', 'Pas maintenant.', 'froid'),
+    ...say('beatrice', '… et le pavillon de la piscine enfin rénové ! Dix ans qu’on en parlait.', 'sourire'),
     ...say('monica', 'Dix ans que Paul refusait qu’on y touche.', 'froid'),
-    ...say('paul', "Parce qu'il n'y avait pas de budget."),
+    ...say('paul', "Parce qu'il n'y avait pas de budget. Et ce n'est pas moi qui ai voulu que ce soit fini pour la Saint-Jean. C'est Béatrice."),
+    ...say('beatrice', 'Il était temps de tourner la page.', 'sourire'),
     ...say('monica', 'Bien sûr. Et il a encore mis la date de naissance de Lou comme code sur la porte. Comme sur l’alarme, comme sur sa carte bleue. Un jour, on se fera tout voler.', undefined, { clues: ['code-lou'] }),
     ...say('paul', 'Merci, chérie. Maintenant toute la table le sait.', 'froid'),
     ...say('beatrice', 'Vous savez, {alias}… votre maison, le 9. Il y avait une femme qui vivait là, avant.', 'trouble'),
@@ -214,7 +239,7 @@ const nodes: Record<string, StoryNode> = {
     ...say('beatrice', 'Parce que, tôt ou tard, quelqu’un vous le dira. Et mal.'),
   ], 's2.versions'),
   ...seq('s2.versions', { decor: 'salon', time: 'soir', cast: [{ id: 'monica', pos: 'gauche', mood: 'neutre' }, { id: 'beatrice', pos: 'centre', mood: 'trouble' }, { id: 'paul', pos: 'droite', mood: 'neutre' }] }, [
-    ...say('beatrice', 'Alice. Alice Marchal. Elle est partie une nuit de juin. Elle voyait quelqu’un, un homme de l’extérieur. Elle a pris sa voiture et elle n’est jamais revenue.'),
+    ...say('beatrice', 'Alice. Alice Marchal. Ma trésorière, ma meilleure amie. Elle est partie une nuit de juin. Elle voyait quelqu’un, un homme de l’extérieur. Elle a pris sa voiture et elle n’est jamais revenue.'),
     ...say('paul', "Ce n'est pas ce qui s'est passé.", 'froid'),
     ...say('paul', "On a retrouvé sa voiture dans l'étang du Moulin. Les gendarmes ont conclu à un accident. Elle s'est noyée. Elle n'est partie avec personne."),
     ...say('beatrice', "On n'a jamais retrouvé le corps, Paul.", 'froid'),
@@ -328,7 +353,8 @@ const nodes: Record<string, StoryNode> = {
   // ─────────────────────────────── Scène 4 — Le message
   ...seq('s3', allee('nuit'), [
     title('Scène 4', 'Le message'),
-    narr('Une deuxième vibration, presque aussitôt. Pas sur votre ligne : sur la seconde. La ligne de l’inconnu, muette depuis trois mois.'),
+    narr('Vous éteignez la lampe. En face, quelques secondes plus tard, la fenêtre de Paul s’éteint aussi.'),
+    narr('Le silence. Puis une vibration. Pas sur votre ligne : sur la seconde. La ligne de l’inconnu, muette depuis trois mois.'),
     sms({
       thread: 'anonyme',
       contact: 'Ligne 2 · Inconnu',
@@ -580,6 +606,7 @@ export const episode1: Story = {
   },
   clues: {
     'alban-regard': { id: 'alban-regard', title: 'Le regard d’Alban', text: 'Le jardinier a cru reconnaître quelqu’un en vous voyant.' },
+    etiquette: { id: 'etiquette', title: 'L’étiquette de la confiture', text: '« Abricots — juin », de la main de Béatrice. Une écriture penchée, à l’encre bleue, aux boucles très rondes.' },
     'faire-part': { id: 'faire-part', title: 'Faire-part de Lou', text: '« Lou Delaunay — née le 14 mars 2009 », encadré sur la cheminée des Delaunay.' },
     'lumiere-bleue': { id: 'lumiere-bleue', title: 'La lumière bleue', text: 'Le pavillon de la piscine, vu depuis le salon, réveille un fragment de souvenir. Un souvenir n’est pas une preuve.' },
     'saint-jean': { id: 'saint-jean', title: 'La photo de la Saint-Jean', text: 'Sur la photo de groupe d’il y a dix ans, Alice a été coupée du cadre.' },
@@ -596,6 +623,7 @@ export const episode1: Story = {
     'alban-beatrice': { id: 'alban-beatrice', title: 'Alban et Béatrice', text: '« Alban me doit beaucoup », dit Béatrice.' },
   },
   photos: {
+    'alice-2016': { title: 'Alice, Saint-Jean 2016', caption: 'Alice Marchal — Saint-Jean — 21.06.2016' },
     'bea-alban': { title: 'Photo prise à la fenêtre', caption: 'Entrée du domaine — 00:21' },
     'bea-alban-floue': { title: 'Photo floue', caption: 'Entrée du domaine — 00:21 (floue)' },
     'pavillon-2347': { title: 'Photo reçue', caption: 'Pavillon de la piscine — 21.06.2016 — 23:47' },

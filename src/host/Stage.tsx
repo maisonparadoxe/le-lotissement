@@ -15,9 +15,12 @@ export interface LiveFx {
   qteProgress: number;
   navHover: string | null;
   vf: ViewfinderView;
+  /** Compteur de bips du moniteur, pour faire battre l'écran. */
+  pulse: number;
+  mirrorWipe: number;
 }
 
-export const LIVE_DEFAULT: LiveFx = { keypadEntry: '', qteProgress: 0, navHover: null, vf: VIEW_DEFAULT };
+export const LIVE_DEFAULT: LiveFx = { keypadEntry: '', qteProgress: 0, navHover: null, vf: VIEW_DEFAULT, pulse: 0, mirrorWipe: 0 };
 
 export type TextSpeed = 'normale' | 'rapide' | 'instantanee';
 const SPEED_MS: Record<TextSpeed, number> = { normale: 22, rapide: 8, instantanee: 0 };
@@ -60,10 +63,14 @@ export function Stage({
   const { stage } = node;
   const speaker = node.type === 'line' ? node.speaker : undefined;
   const photo = state.phone.photo ?? stage.photo;
+  // Réveil : l'image sort du noir et du flou à chaque battement juste.
+  const wake = node.type === 'heartbeat' ? (state.heart?.hits ?? 0) / node.beats : null;
+  const decorStyle =
+    wake === null ? undefined : { filter: `brightness(${0.04 + 0.96 * wake}) blur(${(1 - wake) * 12}px)`, transition: 'filter 1.2s ease' };
 
   return (
     <div className={`stage time-${stage.time}`}>
-      <div className="decor-layer" key={`${stage.decor}-${stage.time}`}>
+      <div className="decor-layer" key={`${stage.decor}-${stage.time}`} style={decorStyle}>
         <Decor decor={stage.decor} time={stage.time} />
       </div>
 
@@ -133,6 +140,29 @@ export function Stage({
           <div className="dialogue prompt-box vf-prompt">
             <p className="text">{node.prompt}</p>
             <p className="phone-hint">Votre téléphone est devenu un viseur : glissez pour cadrer, zoomez, restez immobile</p>
+          </div>
+        </div>
+      )}
+
+      {node.type === 'heartbeat' && (
+        <>
+          {live.pulse > 0 && <div className="hb-pulse" key={live.pulse} />}
+          <div className="dialogue prompt-box hb-prompt">
+            <p className="text">{node.prompt}</p>
+            <p className="phone-hint">Votre téléphone est devenu un moniteur cardiaque : touchez-le à chaque bip</p>
+          </div>
+        </>
+      )}
+
+      {node.type === 'mirror' && (
+        <div className="mirror-stage">
+          <div className="polaroid" style={{ opacity: 0.12 + 0.88 * live.mirrorWipe }}>
+            <Photo id={node.photo} />
+            <p>{story.photos[node.photo]?.caption}</p>
+          </div>
+          <div className="dialogue prompt-box">
+            <p className="text">{node.prompt}</p>
+            <p className="phone-hint">Votre téléphone est devenu un miroir : essuyez la buée</p>
           </div>
         </div>
       )}

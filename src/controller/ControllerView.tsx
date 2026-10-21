@@ -15,9 +15,10 @@ import {
   type PhoneMode,
 } from '../../shared/engine.ts';
 import type { Fx } from '../../shared/protocol.ts';
-import type { FlirtNode, FlirtTone, Story, Tone, ViewfinderNode } from '../../shared/types.ts';
+import type { FlirtNode, FlirtTone, HeartbeatNode, MirrorNode, Story, Tone, ViewfinderNode } from '../../shared/types.ts';
 import { focusColor, ViewfinderWorld, VIEW_DEFAULT, type ViewfinderView } from '../common/ViewfinderWorld.tsx';
 import { Photo } from '../common/art/Photo.tsx';
+import { PortraitArt } from '../common/art/Portrait.tsx';
 import { cue, setMuted } from '../common/feedback.ts';
 import { EndSummary } from '../common/EndSummary.tsx';
 
@@ -40,6 +41,8 @@ const MODE_ICON: Record<PhoneMode, string> = {
   saisie: '⌨',
   viseur: '◎',
   flirt: '♡',
+  moniteur: '♥',
+  miroir: '◐',
   fin: '★',
 };
 
@@ -77,7 +80,7 @@ export function ControllerView({ story, state, send, sendFx, connection, serverO
     send(i);
   };
 
-  const canDossier = !['telephone', 'action', 'attente', 'viseur', 'flirt'].includes(mode);
+  const canDossier = !['telephone', 'action', 'attente', 'viseur', 'flirt', 'moniteur', 'miroir'].includes(mode);
 
   return (
     <div className={`ctrl mode-${mode}`}>
@@ -188,6 +191,12 @@ function ModeView({
 
     case 'flirt':
       return node.type === 'flirt' ? <FlirtPhone node={node} state={state} tap={tap} /> : null;
+
+    case 'moniteur':
+      return node.type === 'heartbeat' ? <Monitor node={node} state={state} send={send} sendFx={sendFx} /> : null;
+
+    case 'miroir':
+      return node.type === 'mirror' ? <Mirror node={node} send={send} sendFx={sendFx} /> : null;
 
     case 'saisie':
       return node.type === 'input' ? <TextInput prompt={node.prompt} suggestions={node.suggestions} onSubmit={(text) => tap({ type: 'input-submit', text })} /> : null;
@@ -605,6 +614,193 @@ function Viewfinder({ node, send, sendFx }: { node: ViewfinderNode; send: (i: In
       <button className="vf-lower" onClick={() => fire('rate')}>
         Baisser le téléphone
       </button>
+    </div>
+  );
+}
+
+// ───────────────────────────── Moniteur cardiaque (réveil)
+function Monitor({ node, state, send, sendFx }: { node: HeartbeatNode; state: GameState; send: (i: Input) => void; sendFx: (fx: Fx) => void }) {
+  const hits = state.heart?.hits ?? 0;
+  // Le cœur s'accélère à mesure qu'elle remonte.
+  const bpm = node.bpm + hits * 2;
+  const period = 60000 / bpm;
+  const tolerance = state.settings.extendedTime ? 300 : 190;
+  const lastBeat = useRef(performance.now());
+  const lastSent = useRef(0);
+  const [beat, setBeat] = useState(0);
+  const [judge, setJudge] = useState<{ ok: boolean; n: number } | null>(null);
+
+  useEffect(() => {
+    let id = 0;
+    const schedule = () => {
+      const wait = Math.max(0, lastBeat.current + period - performance.now());
+      id = window.setTimeout(() => {
+        lastBeat.current = performance.now();
+        cue('bip');
+        sendFx({ kind: 'pulse' });
+        setBeat((b) => b + 1);
+        schedule();
+      }, wait);
+    };
+    schedule();
+    return () => clearTimeout(id);
+  }, [period, sendFx]);
+
+  const onTap = (e: React.PointerEvent) => {
+    e.preventDefault();
+    const t = performance.now();
+    const d = Math.min(t - lastBeat.current, lastBeat.current + period - t);
+    const ok = d <= tolerance && t - lastSent.current > 450;
+    if (ok) {
+      lastSent.current = t;
+      send({ type: 'hb-beat' });
+    }
+    setJudge((j) => ({ ok, n: (j?.n ?? 0) + 1 }));
+  };
+
+  return (
+    <div className="m-monitor" onPointerDown={onTap} role="button" aria-label="Toucher au rythme du cœur">
+      <p className="prompt">{node.prompt}</p>
+      <div className="mon-screen">
+        <div className="mon-vals">
+          <span className="mon-bpm">
+            {bpm}
+            <small>bpm</small>
+          </span>
+          <span className="mon-spo">
+            SpO₂ <b>{91 + Math.min(7, hits)}</b>%
+          </span>
+        </div>
+        <svg className="mon-trace" viewBox="0 0 300 100" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 60 L300 60" className="mon-flat" />
+          <path key={beat} d="M0 60 L90 60 L100 54 L110 60 L125 60 L132 70 L142 10 L152 88 L160 60 L190 60 L205 48 L222 60 L300 60" className="mon-wave" />
+        </svg>
+        <div key={`h${beat}`} className="mon-heart">♥</div>
+      </div>
+      <div className="mon-dots" aria-label={`${hits} battements sur ${node.beats}`}>
+        {Array.from({ length: node.beats }, (_, i) => (
+          <i key={i} className={i < hits ? 'on' : ''} />
+        ))}
+      </div>
+      <p className={`mon-judge ${judge ? (judge.ok ? 'ok' : 'ko') : ''}`} key={judge?.n}>
+        {judge ? (judge.ok ? 'Oui… encore.' : 'Pas encore. Écoutez le bip.') : node.instruction}
+      </p>
+      {state.settings.extendedTime && <p className="small">Temps élargi activé.</p>}
+    </div>
+  );
+}
+
+// ───────────────────────────── Miroir (le nouveau visage)
+const MIRROR_CLEAR = 0.55;
+
+function Mirror({ node, send, sendFx }: { node: MirrorNode; send: (i: Input) => void; sendFx: (fx: Fx) => void }) {
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const last = useRef<{ x: number; y: number } | null>(null);
+  const lastCheck = useRef(0);
+  const [clear, setClear] = useState(false);
+  const [help, setHelp] = useState(false);
+
+  useEffect(() => {
+    const c = canvas.current;
+    const ctx = c?.getContext('2d');
+    if (!c || !ctx) return;
+    const dpr = window.devicePixelRatio || 1;
+    c.width = c.clientWidth * dpr;
+    c.height = c.clientHeight * dpr;
+    ctx.fillStyle = 'rgba(222, 230, 234, 0.96)';
+    ctx.fillRect(0, 0, c.width, c.height);
+    // Quelques traînées plus denses, pour que la buée ait de la matière.
+    for (let i = 0; i < 40; i++) {
+      ctx.fillStyle = `rgba(245, 248, 250, ${0.15 + Math.random() * 0.25})`;
+      ctx.beginPath();
+      ctx.arc(Math.random() * c.width, Math.random() * c.height, (10 + Math.random() * 40) * dpr, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    const t = setTimeout(() => setHelp(true), 10000);
+    return () => clearTimeout(t);
+  }, []);
+
+  const reveal = () => {
+    if (clear) return;
+    setClear(true);
+    cue('succes');
+    sendFx({ kind: 'mirror-wipe', value: 1 });
+  };
+
+  const measure = () => {
+    const c = canvas.current;
+    const ctx = c?.getContext('2d');
+    if (!c || !ctx) return;
+    const data = ctx.getImageData(0, 0, c.width, c.height).data;
+    let wiped = 0;
+    let total = 0;
+    for (let i = 3; i < data.length; i += 4 * 16) {
+      total++;
+      if (data[i] < 60) wiped++;
+    }
+    const v = wiped / total;
+    sendFx({ kind: 'mirror-wipe', value: Math.min(1, v / MIRROR_CLEAR) });
+    if (v >= MIRROR_CLEAR) reveal();
+  };
+
+  const wipe = (e: React.PointerEvent) => {
+    const c = canvas.current;
+    const ctx = c?.getContext('2d');
+    if (!c || !ctx || clear) return;
+    const r = c.getBoundingClientRect();
+    const k = c.width / r.width;
+    const p = { x: (e.clientX - r.left) * k, y: (e.clientY - r.top) * k };
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.lineCap = 'round';
+    ctx.lineWidth = 54 * k;
+    ctx.beginPath();
+    ctx.moveTo(last.current?.x ?? p.x, last.current?.y ?? p.y);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+    last.current = p;
+    const t = performance.now();
+    if (t - lastCheck.current > 200) {
+      lastCheck.current = t;
+      measure();
+    }
+  };
+
+  return (
+    <div className="m-mirror">
+      <p className="prompt">{node.prompt}</p>
+      <div className={`mirror-frame ${clear ? 'clear' : ''}`}>
+        <svg className="mirror-face" viewBox="40 120 320 440" preserveAspectRatio="xMidYMid slice" aria-label={clear ? 'Votre nouveau visage' : 'Un miroir couvert de buée'}>
+          <PortraitArt id="alice" mood="neutre" />
+        </svg>
+        <canvas
+          ref={canvas}
+          className="mirror-fog"
+          onPointerDown={(e) => {
+            e.currentTarget.setPointerCapture(e.pointerId);
+            last.current = null;
+            wipe(e);
+          }}
+          onPointerMove={(e) => e.buttons && wipe(e)}
+          onPointerUp={() => (last.current = null)}
+        />
+      </div>
+      {clear ? (
+        <>
+          <p className="mirror-text">C’est vous.</p>
+          <button className="big-btn" onClick={() => send({ type: 'mirror-done' })}>
+            Continuer
+          </button>
+        </>
+      ) : (
+        <>
+          <p className="mirror-text">{node.instruction}</p>
+          {help && (
+            <button className="vf-lower" onClick={reveal}>
+              Essuyer la buée d’un geste
+            </button>
+          )}
+        </>
+      )}
     </div>
   );
 }

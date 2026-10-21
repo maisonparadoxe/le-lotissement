@@ -107,6 +107,11 @@ export const flirt = (o: {
   outcome: { high: Effects; mid: Effects; low: Effects };
 }): Beat => node({ type: 'flirt', ...o });
 
+export const heartbeat = (o: { prompt: string; instruction: string; beats: number; bpm: number }): Beat =>
+  node({ type: 'heartbeat', ...o });
+
+export const mirror = (o: { prompt: string; instruction: string; photo: string }): Beat => node({ type: 'mirror', ...o });
+
 export const end = (t: string): Beat => node({ type: 'end', title: t }, true);
 
 /** Ne joue le beat que si la condition est remplie (sinon il est sauté). */

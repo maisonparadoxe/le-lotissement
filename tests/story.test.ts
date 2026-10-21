@@ -41,13 +41,17 @@ function moves(s: GameState): Input[] {
       return s.flirt?.done
         ? [{ type: 'flirt-end' }]
         : (['froid', 'neutre', 'joueuse'] as const).map((tone) => ({ type: 'flirt-send', tone }));
+    case 'heartbeat':
+      return [{ type: 'hb-beat' }];
+    case 'mirror':
+      return [{ type: 'mirror-done' }];
     default:
       return [];
   }
 }
 
 /** Fait avancer d'un pas, une seconde après l'entrée dans le nœud courant. */
-function step(s: GameState, i: Input, now = Math.max(s.enteredAt, s.flirt?.at ?? 0) + 1000): GameState {
+function step(s: GameState, i: Input, now = Math.max(s.enteredAt, s.flirt?.at ?? 0, s.heart?.at ?? 0) + 1000): GameState {
   if ((i.type as string) === 'qte-timeout') {
     const r = tick(story, s, s.qte!.deadline + 10_000);
     assert.ok(r, 'le QTE doit échouer après le délai');
@@ -84,7 +88,7 @@ test('tous les nœuds sont atteignables et toutes les fins le sont aussi', () =>
   const key = (s: GameState) => {
     const flags = Object.entries(s.flags).filter(([k, v]) => v && tested.has(k)).map(([k]) => k).sort();
     const f = s.flirt && { r: s.flirt.round, t: s.flirt.tension, d: s.flirt.done };
-    return `${s.nodeId}|${flags}|${s.clues.includes('registre')}|${JSON.stringify(f ?? null)}`;
+    return `${s.nodeId}|${flags}|${s.clues.includes('registre')}|${JSON.stringify(f ?? null)}|${s.heart?.hits ?? ''}`;
   };
   const queue: GameState[] = [started()];
   const visitedStates = new Set<string>();
@@ -219,6 +223,31 @@ test('le flirt : un double appui trop rapide est ignoré', () => {
   const un = step(s, { type: 'flirt-send', tone: 'neutre' });
   assert.equal(applyInput(story, un, { type: 'flirt-send', tone: 'neutre' }, (un.flirt?.at ?? 0) + 100), null);
   assert.equal(applyInput(story, s, { type: 'flirt-send', tone: 'abc' as never }, s.enteredAt + 5000), null);
+});
+
+test('le réveil : seuls les battements assez espacés comptent, puis le miroir', () => {
+  let s = started();
+  const n = currentNode(story, s);
+  assert.equal(n.type, 'title');
+  s = advanceTo('heartbeat');
+  const hb = currentNode(story, s);
+  assert.equal(hb.type, 'heartbeat');
+  if (hb.type !== 'heartbeat') return;
+  assert.equal(s.heart?.hits, 0);
+  let now = s.enteredAt + 1000;
+  s = applyInput(story, s, { type: 'hb-beat' }, now)!;
+  assert.equal(s.heart?.hits, 1);
+  // deux appuis trop rapprochés : le second est ignoré
+  assert.equal(applyInput(story, s, { type: 'hb-beat' }, now + 100), null);
+  assert.equal(applyInput(story, s, { type: 'mirror-done' }, now + 1000), null);
+  for (let i = 1; i < hb.beats; i++) s = applyInput(story, s, { type: 'hb-beat' }, (now += 1000))!;
+  assert.notEqual(s.nodeId, hb.id);
+  assert.equal(s.heart, undefined);
+  s = advanceTo('mirror');
+  const m = currentNode(story, s);
+  assert.equal(m.type, 'mirror');
+  assert.equal(applyInput(story, s, { type: 'hb-beat' }, s.enteredAt + 1000), null);
+  assert.notEqual(step(s, { type: 'mirror-done' }).nodeId, m.id);
 });
 
 test('le retour au menu principal remet la partie à zéro et garde les réglages', () => {

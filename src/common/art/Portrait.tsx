@@ -1,6 +1,9 @@
-// Portraits stylisés des quatre personnages, avec quatre expressions.
+// Portraits stylisés des personnages, avec quatre expressions. Alice a deux
+// visages : celui d'aujourd'hui (reconstruit) et celui d'avant, en 2016.
 
 import type { CharId, Mood } from '../../../shared/types.ts';
+
+export type PortraitId = CharId | 'alice' | 'alice-2016';
 
 interface Look {
   skin: string;
@@ -14,12 +17,71 @@ interface Look {
   clothes: (look: Look) => React.ReactNode;
   extra?: (look: Look) => React.ReactNode;
   brow: number;
+  head?: string;
 }
 
 const HEAD_F = 'M120 240 C120 168 160 140 200 140 C 242 140 280 168 280 240 C 280 302 248 350 200 352 C 152 350 120 302 120 240 Z';
 const HEAD_M = 'M116 236 C116 166 158 136 200 136 C 244 136 284 166 284 236 C 284 296 264 338 232 354 C 214 362 186 362 168 354 C 136 338 116 296 116 236 Z';
 
-const LOOKS: Record<CharId, Look> = {
+const HEAD_ALICE = 'M118 238 C118 166 160 138 200 138 C 242 138 282 166 282 238 C 282 292 266 330 236 350 C 218 360 182 360 164 350 C 134 330 118 292 118 238 Z';
+
+const LOOKS: Record<PortraitId, Look> = {
+  // Aujourd'hui : visage anguleux, cheveux courts ébouriffés, peau claire à
+  // reflet olive, cicatrice de trachéotomie. Tenue de la clinique.
+  alice: {
+    skin: '#E2C6A4',
+    skinShade: '#C6A580',
+    hair: '#3B2A20',
+    hairShade: '#241913',
+    lips: '#9A5A50',
+    male: false,
+    brow: 7,
+    head: HEAD_ALICE,
+    hairBack: 'M108 250 C 98 160 150 112 204 114 C 262 116 304 162 294 250 C 290 280 282 300 274 312 L 126 312 C 118 300 110 280 108 250 Z',
+    hairFront: 'M114 232 C 104 150 160 114 208 118 C 262 122 300 166 288 232 C 282 206 270 188 254 178 L 248 198 L 234 172 L 220 194 L 204 166 L 190 192 L 172 170 L 164 196 C 140 198 124 212 114 232 Z',
+    clothes: () => (
+      <>
+        <path d="M30 560 C 42 448 114 404 200 400 C 286 404 358 448 370 560 Z" fill="#A9BFC4" />
+        <path d="M156 404 C 172 432 228 432 244 404" fill="none" stroke="#8AA3A9" strokeWidth="4" />
+        {[0, 1, 2, 3, 4, 5].map((i) => (
+          <circle key={i} cx={90 + i * 44} cy={490 + (i % 2) * 26} r="3" fill="#8AA3A9" />
+        ))}
+      </>
+    ),
+    extra: (l) => (
+      <>
+        {/* cicatrice de trachéotomie, à la base du cou */}
+        <path d="M188 392 Q200 397 212 392" stroke="#C48C80" strokeWidth="3" fill="none" strokeLinecap="round" />
+        <path d="M150 300 C 160 330 178 344 200 346" stroke={l.skinShade} strokeWidth="2" fill="none" opacity="0.6" />
+      </>
+    ),
+  },
+  // 2016 : visage plus rond, cheveux longs, robe verte du soir de la Saint-Jean.
+  'alice-2016': {
+    skin: '#EACFB3',
+    skinShade: '#D3B091',
+    hair: '#4A3022',
+    hairShade: '#2E1D14',
+    lips: '#B0606A',
+    male: false,
+    brow: 5,
+    hairBack: 'M96 250 C 88 150 146 104 202 106 C 262 108 314 152 304 250 C 300 330 322 420 300 470 C 280 486 256 470 248 440 L 152 440 C 144 470 120 486 100 470 C 78 420 100 330 96 250 Z',
+    hairFront: 'M200 120 C 150 122 116 160 114 238 C 132 196 168 168 206 150 C 230 176 262 196 286 238 C 284 160 248 120 200 120 Z',
+    clothes: (l) => (
+      <>
+        <path d="M30 560 C 42 450 114 408 200 404 C 286 408 358 450 370 560 Z" fill={l.skin} />
+        <path d="M60 560 C 70 500 110 470 150 466 C 170 490 230 490 250 466 C 290 470 330 500 340 560 Z" fill="#1F5A3E" />
+        <path d="M120 470 L132 418 M280 470 L268 418" stroke="#1F5A3E" strokeWidth="5" strokeLinecap="round" />
+      </>
+    ),
+    extra: () => (
+      <>
+        <circle cx="120" cy="282" r="8" fill="none" stroke="#C9A45C" strokeWidth="2.5" />
+        <circle cx="280" cy="282" r="8" fill="none" stroke="#C9A45C" strokeWidth="2.5" />
+      </>
+    ),
+  },
+
   beatrice: {
     skin: '#EDCDB4',
     skinShade: '#D9AE93',
@@ -171,16 +233,25 @@ function Mouth({ l, mood }: { l: Look; mood: Mood }) {
   );
 }
 
-export function Portrait({ id, mood = 'neutre' }: { id: CharId; mood?: Mood }) {
-  const l = LOOKS[id];
+export function Portrait({ id, mood = 'neutre' }: { id: PortraitId; mood?: Mood }) {
   return (
     <svg className="portrait-svg" viewBox="0 0 400 560" aria-hidden="true">
+      <PortraitArt id={id} mood={mood} />
+    </svg>
+  );
+}
+
+/** Le dessin seul (repère 400 × 560), pour l'insérer dans une autre image. */
+export function PortraitArt({ id, mood = 'neutre' }: { id: PortraitId; mood?: Mood }) {
+  const l = LOOKS[id];
+  return (
+    <g>
       {l.hairBack && <path d={l.hairBack} fill={l.hairShade} />}
       <path d="M168 330 L168 410 C 180 420 220 420 232 410 L232 330 Z" fill={l.skinShade} />
       {l.clothes(l)}
       <ellipse cx={l.male ? 116 : 120} cy="256" rx="12" ry="20" fill={l.skinShade} />
       <ellipse cx={l.male ? 284 : 280} cy="256" rx="12" ry="20" fill={l.skinShade} />
-      <path d={l.male ? HEAD_M : HEAD_F} fill={l.skin} />
+      <path d={l.head ?? (l.male ? HEAD_M : HEAD_F)} fill={l.skin} />
       <path d="M200 340 C 236 338 268 312 278 262 C 270 330 236 352 200 352 Z" fill={l.skinShade} opacity="0.45" />
       <ellipse cx="160" cy="292" rx="18" ry="9" fill="#D98C82" opacity={mood === 'trouble' ? 0.35 : 0.18} />
       <ellipse cx="240" cy="292" rx="18" ry="9" fill="#D98C82" opacity={mood === 'trouble' ? 0.35 : 0.18} />
@@ -191,6 +262,6 @@ export function Portrait({ id, mood = 'neutre' }: { id: CharId; mood?: Mood }) {
       <Mouth l={l} mood={mood} />
       {l.extra?.(l)}
       <path d={l.hairFront} fill={l.hair} />
-    </svg>
+    </g>
   );
 }

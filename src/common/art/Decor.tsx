@@ -400,6 +400,70 @@ function PavillonInterieur() {
   );
 }
 
+/** Chambre d'hôpital, vue depuis le lit. La nuit, il ne reste que la lueur du moniteur. */
+function Hopital({ time }: { time: TimeOfDay }) {
+  if (time === 'nuit') {
+    return (
+      <>
+        <rect width="1600" height="900" fill="#020403" />
+        <rect x="1180" y="300" width="220" height="150" rx="10" fill="#0a1a12" opacity="0.6" />
+        <path d="M1190 380 L1250 380 L1265 350 L1280 410 L1295 380 L1390 380" stroke="#2bd67b" strokeWidth="3" fill="none" opacity="0.35" />
+      </>
+    );
+  }
+  return (
+    <>
+      <defs>
+        <linearGradient id="hop-mur" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#c9d6d0" />
+          <stop offset="1" stopColor="#9fb2aa" />
+        </linearGradient>
+        <radialGradient id="hop-neon" cx="0.5" cy="0" r="0.9">
+          <stop offset="0" stopColor="#f4fbff" stopOpacity="0.9" />
+          <stop offset="1" stopColor="#f4fbff" stopOpacity="0" />
+        </radialGradient>
+        <filter id="hop-flou">
+          <feGaussianBlur stdDeviation="14" />
+        </filter>
+      </defs>
+      <rect width="1600" height="900" fill="url(#hop-mur)" />
+      {/* plafond et néon */}
+      <path d="M0 0 L1600 0 L1600 120 L0 160 Z" fill="#e4ebe8" />
+      <rect x="560" y="40" width="480" height="34" rx="6" fill="#f8fcff" />
+      <rect x="0" y="0" width="1600" height="600" fill="url(#hop-neon)" />
+      {/* fenêtre à stores, la nuit */}
+      <rect x="110" y="230" width="380" height="330" fill="#1c2733" />
+      {Array.from({ length: 11 }, (_, i) => (
+        <rect key={i} x="110" y={236 + i * 30} width="380" height="14" fill="#d8e0dc" opacity="0.85" />
+      ))}
+      <rect x="100" y="220" width="400" height="350" fill="none" stroke="#e9efec" strokeWidth="14" />
+      {/* moniteur et perfusion */}
+      <rect x="1240" y="170" width="16" height="560" fill="#7d8a86" />
+      <rect x="1160" y="280" width="260" height="180" rx="12" fill="#1b2220" />
+      <rect x="1176" y="296" width="228" height="148" rx="6" fill="#06140d" />
+      <path d="M1180 380 L1240 380 L1255 350 L1270 410 L1285 380 L1400 380" stroke="#2bd67b" strokeWidth="4" fill="none" />
+      <text x="1392" y="330" textAnchor="end" fontFamily="'Courier New', monospace" fontSize="30" fill="#2bd67b">
+        58
+      </text>
+      <rect x="1000" y="120" width="8" height="420" fill="#9aa6a2" />
+      <path d="M960 140 L1050 140" stroke="#9aa6a2" strokeWidth="6" />
+      <rect x="974" y="150" width="56" height="90" rx="14" fill="#e8f2f6" opacity="0.85" />
+      <path d="M1002 240 C 1002 420 900 560 820 700" stroke="#cfd9dc" strokeWidth="4" fill="none" />
+      {/* silhouette floue penchée sur le lit */}
+      <g filter="url(#hop-flou)">
+        <ellipse cx="760" cy="330" rx="90" ry="110" fill="#6b7c86" />
+        <path d="M600 900 C 600 560 680 450 760 450 C 850 450 930 560 930 900 Z" fill="#7f97a3" />
+      </g>
+      {/* draps et barrière du lit */}
+      <path d="M0 760 C 400 700 1200 700 1600 760 L1600 900 L0 900 Z" fill="#eef3f1" />
+      <path d="M0 700 L1600 700" stroke="#b9c4c0" strokeWidth="12" />
+      {[200, 500, 800, 1100, 1400].map((x) => (
+        <rect key={x} x={x} y="700" width="10" height="80" fill="#b9c4c0" />
+      ))}
+    </>
+  );
+}
+
 export function Decor({ decor, time }: { decor: DecorId; time: TimeOfDay }) {
   const outdoor = time === 'interieur' ? 'nuit' : time;
   return (
@@ -407,6 +471,7 @@ export function Decor({ decor, time }: { decor: DecorId; time: TimeOfDay }) {
       {decor === 'allee' && <Allee time={outdoor} />}
       {decor === 'salon' && <Salon time={time} />}
       {decor === 'pavillon' && (time === 'interieur' ? <PavillonInterieur /> : <PavillonExterieur />)}
+      {decor === 'hopital' && <Hopital time={time} />}
     </svg>
   );
 }

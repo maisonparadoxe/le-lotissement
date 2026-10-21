@@ -105,7 +105,11 @@ function App() {
             ? { ...l, navHover: fx.spot }
             : fx.kind === 'viewfinder'
               ? { ...l, vf: { x: fx.x, y: fx.y, zoom: fx.zoom, focus: fx.focus } }
-              : l,
+              : fx.kind === 'pulse'
+                ? { ...l, pulse: l.pulse + 1 }
+                : fx.kind === 'mirror-wipe'
+                  ? { ...l, mirrorWipe: Math.max(l.mirrorWipe, Math.min(1, Math.max(0, fx.value))) }
+                  : l,
     );
   }, []);
 

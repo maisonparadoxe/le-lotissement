@@ -9,6 +9,8 @@ export type Fx =
   | { kind: 'qte-progress'; value: number }
   | { kind: 'nav-hover'; spot: string | null }
   | { kind: 'viewfinder'; x: number; y: number; zoom: number; focus: number }
+  | { kind: 'pulse' }
+  | { kind: 'mirror-wipe'; value: number }
   | { kind: 'ping' };
 
 export type ClientMsg =

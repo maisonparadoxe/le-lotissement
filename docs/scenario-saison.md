@@ -72,7 +72,7 @@ Nouveaux, **un ou deux par épisode** pour renouveler sans tout produire d'un co
 ---
 
 ### Épisode 1 — « Bellécourt » (existant, avec les améliorations ci-dessus)
-Inchangé dans ses grandes lignes. Ajouts proposés : réveil à l'hôpital jouable, enveloppe avec la carte SIM, étiquette de la confiture, appel de Lou ignoré par Monica.
+Inchangé dans ses grandes lignes. **Intégré au jeu** : réveil à l'hôpital jouable (moniteur cardiaque, puis miroir embué pendant que l'écran montre la photo de la Saint-Jean 2016), enveloppe avec la carte SIM, étiquette de la confiture (indice « L'étiquette de la confiture »), appel de Lou ignoré par Monica, réplique de Paul sur la rénovation voulue par Béatrice, Alice trésorière, raison de ne pas aller à la police, moment muet entre le flirt et le message de l'inconnu.
 **Fins d'épisode** : confrontation (Paul sait qu'Alice cherche), silence (personne ne sait qu'elle a le téléphone), alliance (Alban garde le téléphone).
 
 ---

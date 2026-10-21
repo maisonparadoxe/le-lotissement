@@ -1239,3 +1239,188 @@
 .hp-reply.done {
   text-align: center;
 }
+
+/* ───────────── Moniteur cardiaque */
+.mode-moniteur {
+  background: #020403;
+}
+
+.m-monitor {
+  display: grid;
+  gap: 14px;
+  min-height: 100%;
+  align-content: start;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
+}
+
+.mon-screen {
+  position: relative;
+  padding: 14px;
+  border-radius: 14px;
+  background: #06140d;
+  border: 1px solid #12321f;
+  color: #2bd67b;
+  font-family: 'Courier New', monospace;
+}
+
+.mon-vals {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.mon-bpm {
+  font-size: 54px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.mon-bpm small {
+  font-size: 14px;
+  margin-left: 4px;
+}
+
+.mon-spo {
+  color: #6fd6e8;
+  font-size: 15px;
+}
+
+.mon-trace {
+  display: block;
+  width: 100%;
+  height: 110px;
+  margin-top: 8px;
+}
+
+.mon-flat {
+  stroke: #12321f;
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.mon-wave {
+  stroke: #2bd67b;
+  stroke-width: 2.5;
+  fill: none;
+  stroke-linejoin: round;
+  stroke-dasharray: 420;
+  stroke-dashoffset: 420;
+  animation: mon-sweep 0.7s linear forwards, mon-fade 1.4s ease-out forwards;
+}
+
+@keyframes mon-sweep {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes mon-fade {
+  60% { opacity: 1; }
+  to { opacity: 0.25; }
+}
+
+.mon-heart {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  font-size: 26px;
+  color: #e5484d;
+  animation: mon-beat 0.35s ease-out both;
+}
+
+@keyframes mon-beat {
+  from { transform: scale(1.5); }
+  to { transform: scale(1); }
+}
+
+.mon-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.mon-dots i {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #2bd67b;
+  opacity: 0.5;
+}
+
+.mon-dots i.on {
+  background: #2bd67b;
+  opacity: 1;
+}
+
+.mon-judge {
+  text-align: center;
+  min-height: 2.6em;
+  color: var(--gris-bleu-2);
+}
+
+.mon-judge.ok {
+  color: #2bd67b;
+  animation: mon-ok 0.3s ease both;
+}
+
+@keyframes mon-ok {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+.mon-judge.ko {
+  color: #c98f86;
+}
+
+/* ───────────── Miroir */
+.mode-miroir {
+  background: #1c1f22;
+}
+
+.m-mirror {
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+}
+
+.mirror-frame {
+  position: relative;
+  width: min(78vw, 300px);
+  aspect-ratio: 3 / 4;
+  border-radius: 50% / 42%;
+  overflow: hidden;
+  border: 8px solid #b8a88a;
+  box-shadow: 0 0 0 2px #6e6250, 0 12px 30px rgba(0, 0, 0, 0.5);
+  background: #d9e2e6;
+}
+
+.mirror-face {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(#cfdad8, #a9bcb7);
+}
+
+.mirror-fog {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  filter: blur(2px);
+  transition: opacity 1.2s ease;
+}
+
+.mirror-frame.clear .mirror-fog {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mirror-text {
+  font-family: var(--serif);
+  font-size: 20px;
+  text-align: center;
+  margin: 0;
+}

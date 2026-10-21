@@ -2,7 +2,7 @@
 // comme des données, indépendamment de l'interface (écran ou téléphone).
 
 export type CharId = 'beatrice' | 'paul' | 'monica' | 'alban';
-export type DecorId = 'allee' | 'salon' | 'pavillon';
+export type DecorId = 'allee' | 'salon' | 'pavillon' | 'hopital';
 export type TimeOfDay = 'jour' | 'soir' | 'nuit' | 'interieur';
 export type Mood = 'neutre' | 'sourire' | 'froid' | 'trouble';
 export type Tone = 'franchise' | 'esquive' | 'mensonge' | 'retourner' | 'action';
@@ -196,6 +196,28 @@ export interface ViewfinderNode extends BaseNode {
   rate: ViewfinderOutcome;
 }
 
+/** Le téléphone devient un moniteur cardiaque : toucher l'écran au rythme du bip. */
+export interface HeartbeatNode extends BaseNode {
+  type: 'heartbeat';
+  prompt: string;
+  instruction: string;
+  /** Nombre de battements justes nécessaires pour « remonter ». */
+  beats: number;
+  /** Rythme de départ, en battements par minute. */
+  bpm: number;
+  next: string;
+}
+
+/** Le téléphone devient un miroir embué ; l'écran montre une photo d'autrefois. */
+export interface MirrorNode extends BaseNode {
+  type: 'mirror';
+  prompt: string;
+  instruction: string;
+  /** Photo révélée sur l'écran principal à mesure que la buée s'efface. */
+  photo: string;
+  next: string;
+}
+
 export interface EndNode extends BaseNode {
   type: 'end';
   title: string;
@@ -227,6 +249,8 @@ export type StoryNode =
   | InputNode
   | FlirtNode
   | ViewfinderNode
+  | HeartbeatNode
+  | MirrorNode
   | EndNode;
 
 export interface Clue {

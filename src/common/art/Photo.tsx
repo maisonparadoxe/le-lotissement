@@ -1,5 +1,51 @@
 // Photos reçues par l'héroïne (pièces du dossier).
 
+import { PortraitArt } from './Portrait.tsx';
+
+/** Alice, le soir de la Saint-Jean 2016 : le visage d'avant. */
+function Alice2016() {
+  const lampions = [
+    [70, 70, '#F2C98A'],
+    [190, 104, '#E7A0A0'],
+    [320, 82, '#F2C98A'],
+    [470, 110, '#BFD8B8'],
+    [610, 78, '#E7A0A0'],
+    [740, 100, '#F2C98A'],
+  ] as const;
+  return (
+    <svg className="photo-svg" viewBox="0 0 800 600" role="img" aria-label="Photo d'une jeune femme souriante en robe verte, sous des lampions, un soir d'été">
+      <defs>
+        <radialGradient id="aj-glow" cx="0.5" cy="0.35" r="0.8">
+          <stop offset="0" stopColor="#3a3346" />
+          <stop offset="1" stopColor="#141019" />
+        </radialGradient>
+        <filter id="aj-grain">
+          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="11" />
+          <feColorMatrix values="0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0.22 0" />
+          <feComposite in2="SourceGraphic" operator="in" />
+        </filter>
+      </defs>
+      <rect width="800" height="600" fill="url(#aj-glow)" />
+      <path d="M0 60 Q 200 130 400 90 T 800 90" stroke="#0c0a10" strokeWidth="2" fill="none" />
+      {lampions.map(([x, y, c]) => (
+        <g key={x}>
+          <circle cx={x} cy={y} r="70" fill={c} opacity="0.08" />
+          <ellipse cx={x} cy={y} rx="20" ry="24" fill={c} opacity="0.9" />
+        </g>
+      ))}
+      <rect y="470" width="800" height="130" fill="#1b2420" />
+      <g transform="translate(250 110) scale(0.9)">
+        <PortraitArt id="alice-2016" mood="sourire" />
+      </g>
+      <rect width="800" height="600" fill="#f2c98a" opacity="0.06" />
+      <rect width="800" height="600" filter="url(#aj-grain)" />
+      <text x="770" y="570" textAnchor="end" fontFamily="'Courier New', monospace" fontSize="28" fontWeight="bold" fill="#f28c28" opacity="0.9">
+        21.06.2016
+      </text>
+    </svg>
+  );
+}
+
 function BeaAlban({ blur }: { blur: boolean }) {
   return (
     <svg className="photo-svg" viewBox="0 0 800 600" role="img" aria-label={blur ? 'Photo floue de deux silhouettes sous un lampadaire' : 'Photo de nuit : deux personnes très proches sous un lampadaire, l’une remet une enveloppe à l’autre'}>
@@ -44,6 +90,7 @@ function BeaAlban({ blur }: { blur: boolean }) {
 }
 
 export function Photo({ id }: { id: string }) {
+  if (id === 'alice-2016') return <Alice2016 />;
   if (id === 'bea-alban') return <BeaAlban blur={false} />;
   if (id === 'bea-alban-floue') return <BeaAlban blur />;
   if (id !== 'pavillon-2347') return null;

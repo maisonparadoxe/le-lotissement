@@ -32,7 +32,7 @@ function tone(freq: number, start: number, dur: number, gain = 0.06, type: Oscil
   o.stop(t + dur + 0.05);
 }
 
-export type Cue = 'tap' | 'mode' | 'message' | 'erreur' | 'succes' | 'alerte';
+export type Cue = 'tap' | 'mode' | 'message' | 'erreur' | 'succes' | 'alerte' | 'bip';
 
 export function cue(c: Cue) {
   const vib = (p: number | number[]) => {
@@ -66,6 +66,11 @@ export function cue(c: Cue) {
       vib(30);
       tone(659, 0, 0.12);
       tone(988, 0.1, 0.3);
+      break;
+    case 'bip':
+      // Le bip du moniteur cardiaque, et la vibration du pouls.
+      vib(40);
+      tone(1000, 0, 0.1, 0.07);
       break;
     case 'alerte':
       vib([150, 80, 150]);

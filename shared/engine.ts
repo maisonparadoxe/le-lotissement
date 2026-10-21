@@ -15,6 +15,8 @@ export type PhoneMode =
   | 'saisie'
   | 'viseur'
   | 'flirt'
+  | 'moniteur'
+  | 'miroir'
   | 'fin';
 
 export const PHONE_MODE_LABEL: Record<PhoneMode, string> = {
@@ -28,6 +30,8 @@ export const PHONE_MODE_LABEL: Record<PhoneMode, string> = {
   saisie: 'Terminal de saisie',
   viseur: 'Viseur photo',
   flirt: 'Messages · tension',
+  moniteur: 'Moniteur cardiaque',
+  miroir: 'Miroir',
   fin: 'Bilan',
 };
 
@@ -58,6 +62,8 @@ export interface GameState {
   qte?: { startedAt: number; deadline: number };
   /** Échange de séduction en cours : tour, tension (0-100), terminé ?, dernier envoi. */
   flirt?: { round: number; tension: number; done: boolean; at: number };
+  /** Réveil : battements justes déjà comptés, et heure du dernier. */
+  heart?: { hits: number; at: number };
   settings: { extendedTime: boolean };
 }
 
@@ -79,7 +85,9 @@ export type Input =
   | { type: 'input-submit'; text: string }
   | { type: 'vf-shot'; quality: 'nette' | 'floue' | 'rate' }
   | { type: 'flirt-send'; tone: FlirtTone }
-  | { type: 'flirt-end' };
+  | { type: 'flirt-end' }
+  | { type: 'hb-beat' }
+  | { type: 'mirror-done' };
 
 const ADVANCE_DEBOUNCE_MS = 250;
 const FLIRT_SEND_DEBOUNCE_MS = 700;
@@ -98,6 +106,8 @@ function flirtText(v: string | FlirtVariants, tension: number): string {
   return v[flirtLevel(tension)];
 }
 const QTE_GRACE_MS = 500;
+/** Écart minimal entre deux battements comptés (le rythme ne dépasse pas 100/min). */
+export const HEART_MIN_GAP_MS = 450;
 export const ALIAS_MAX = 24;
 
 export function initialState(story: Story, now: number, settings = { extendedTime: false }): GameState {
@@ -148,6 +158,10 @@ export function phoneMode(story: Story, s: GameState): PhoneMode {
       return 'viseur';
     case 'flirt':
       return 'flirt';
+    case 'heartbeat':
+      return 'moniteur';
+    case 'mirror':
+      return 'miroir';
     case 'end':
       return 'fin';
     default:
@@ -217,6 +231,7 @@ function enterNode(story: Story, s: GameState, id: string, now: number): void {
     s.keypad = { attempts: 0, error: false };
     s.qte = undefined;
     s.flirt = undefined;
+    s.heart = undefined;
     s.phone = { opened: false };
     if (node.type === 'sms') {
       const thread = (s.sms[node.thread] ??= { contact: node.contact, messages: [] });
@@ -229,6 +244,7 @@ function enterNode(story: Story, s: GameState, id: string, now: number): void {
       s.flirt = { round: 0, tension: FLIRT_START, done: false, at: now };
       thread.messages.push({ from: 'eux', text: fmt(flirtText(node.rounds[0].incoming, FLIRT_START), s) });
     }
+    if (node.type === 'heartbeat') s.heart = { hits: 0, at: now };
     if (node.type === 'qte') {
       const win = s.settings.extendedTime ? node.extendedWindow : node.window;
       s.qte = { startedAt: now, deadline: now + win };
@@ -400,6 +416,21 @@ export function applyInput(story: Story, prev: GameState, input: Input, now: num
       return null;
     }
 
+    case 'heartbeat': {
+      // Le téléphone juge le rythme ; le serveur ne compte que les battements justes.
+      const h = s.heart;
+      if (input.type !== 'hb-beat' || !h || now - h.at < HEART_MIN_GAP_MS) return null;
+      h.hits++;
+      h.at = now;
+      if (h.hits >= node.beats) enterNode(story, s, node.next, now);
+      return s;
+    }
+
+    case 'mirror':
+      if (input.type !== 'mirror-done') return null;
+      enterNode(story, s, node.next, now);
+      return s;
+
     case 'end':
       return null;
   }
@@ -464,6 +495,10 @@ export function validateStory(story: Story): string[] {
         if (!n.rounds.length) errors.push(`${n.id} : flirt sans tour`);
         for (const e of Object.values(n.outcome))
           for (const c of e.clues ?? []) if (!story.clues[c]) errors.push(`${n.id} : indice ${c} inconnu`);
+        break;
+      case 'mirror':
+        has(n.next, n.id);
+        if (!story.photos[n.photo]) errors.push(`${n.id} : photo ${n.photo} inconnue`);
         break;
       case 'branch':
         has(n.then, n.id);
