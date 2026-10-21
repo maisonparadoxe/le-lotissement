@@ -10,8 +10,13 @@
   - Le mot « telenovela » reste un outil interne ; en promotion : « drame de voisinage à suspense », « série interactive ».
 - **Sensuel et suggéré, jamais explicite** (voir `ton.md`).
 
-## Hypothèse à confirmer
-- **Public visé** : adultes de 25 à 45 ans, plutôt des femmes, amateurs de séries dramatiques et de jeux narratifs, sur PC (le téléphone sert de manette).
+## Public visé (précisé par l'auteur)
+- **Majoritairement des femmes, de tous âges**, qui connaissent les références citées (*Desperate Housewives*, *Big Little Lies*, *The White Lotus*) ou qui regardent sur Netflix et ailleurs des séries du même style. Ce ne sont donc pas forcément des joueuses habituées.
+- Conséquences à garder en tête :
+  - **Peu de friction au démarrage** : lancer le jeu et relier le téléphone doit prendre une minute, sans installer d'outils. Le téléphone en QR code est un atout (rien à installer côté téléphone), mais l'installation côté ordinateur est le point faible à traiter.
+  - **Prise en main immédiate** : les gestes du téléphone doivent se comprendre sans explication ; pas de QTE exigeants, temps élargi disponible, texte lisible.
+  - **Thèmes adultes** (adultère, séduction, voyeurisme, suggérés) : prévoir un classement 16+ ou 18+ selon les plateformes.
+  - **Promotion** : là où ce public regarde et parle de séries (réseaux sociaux, communautés de fans de séries, presse télé), avec des extraits courts du téléphone qui se transforme.
 
 ## En discussion, pas encore validé
 ### Moteur d'affichage
