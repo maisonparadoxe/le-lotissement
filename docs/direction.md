@@ -18,6 +18,11 @@
   - **Thèmes adultes** (adultère, séduction, voyeurisme, suggérés) : prévoir un classement 16+ ou 18+ selon les plateformes.
   - **Promotion** : là où ce public regarde et parle de séries (réseaux sociaux, communautés de fans de séries, presse télé), avec des extraits courts du téléphone qui se transforme.
 
+## Style graphique : décision de l'auteur
+- **Un seul style, le « comics »** (aplats nets, ombres d'encre noire, palette limitée, fonds clairs unis), généré avec Illustrious en local. L'uniformisation se fait par les prompts (mêmes réglages, mêmes tags de style, même cadrage), puis éventuellement par un traitement commun (fond, noirs, blancs, contraste, grain).
+- **Différencier les visages des femmes** par la coiffure, la forme du visage et la couleur de peau.
+- Premiers portraits générés : Alice, Béatrice, Monica, Paul, Alban. Points à corriger : âges trop jeunes, visages féminins trop proches, cadrages variables, boucles d'oreilles d'Alice trop proches du losange des *Sims*, cicatrice de trachéotomie d'Alice (cou) à rétablir.
+
 ## En discussion, pas encore validé
 ### Moteur d'affichage
 Godot comme écran principal sur PC, le téléphone restant une page web reliée par QR code. Recommandation : garder le serveur actuel comme relais (histoire, téléphone, sécurité), Godot s'y connecte et affiche la scène. Prototype d'abord sur le style actuel, avec lumière, mouvement et un viseur au flou réaliste.
