@@ -1,6 +1,6 @@
 # Structure de la saison (validé par l'auteur)
 
-Six épisodes de 10 à 15 minutes, un par couche de vérité, en suivant la chronologie de la nuit du 21 juin 2016 (voir `verite.md`).
+Six épisodes de 10 à 15 minutes, un par couche de vérité, en suivant la chronologie de la nuit du 21 juin 2016 (voir `verite.md`). Toute la saison se déroule en une semaine, du 14 au 21 juin ; le finale a lieu à la Saint-Jean, dix ans jour pour jour après le drame. Le détail des épisodes, des choix et des fins est dans `scenario-saison.md` (validé).
 
 1. **Bellécourt** (écrit) : le retour, les premiers indices, le SMS anonyme. Cliffhanger.
 2. **Paul** : la liaison, la dispute, ce que Paul a réellement fait. Premier adultère découvert.

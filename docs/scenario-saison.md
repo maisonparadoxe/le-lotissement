@@ -1,6 +1,6 @@
 # Le Lotissement — Scénario de la saison 1
 
-> **Statut : proposition de l'auteur assistant, à valider.** Ce document contient **toute la vérité de l'intrigue** : ne pas le partager avec des testeurs.
+> **Statut : validé par l'auteur** (les propositions de la partie 4 ont toutes été validées ; les titres des épisodes 2 à 6 restent provisoires). Ce document contient **toute la vérité de l'intrigue** : ne pas le partager avec des testeurs.
 > Les éléments déjà validés viennent de `verite.md`, `ton.md`, `fins.md`, `saison.md`, `direction.md`. Tout ce qui est nouveau est signalé par **[NOUVEAU]** et doit être validé.
 > Conformément aux consignes du projet, **aucun nouveau nom propre n'est inventé** : les personnages et lieux à nommer sont notés **[À NOMMER : …]**.
 
@@ -199,7 +199,7 @@ Rendez-vous avec Lou, à l'abri des regards (la loge d'Alban, ou le parking de l
 **Scène 2 — L'orage.**
 L'orage éclate, le courant saute dans tout le domaine. Alice se réfugie chez Alban. Lampe torche, bougies, pluie sur la verrière.
 Alban parle enfin : à 00 h 40, Béatrice l'a appelé pour faire disparaître la voiture. Il a trouvé Alice au bord du bassin. Elle respirait. Il ne pouvait pas faire ce qu'on lui demandait. Il l'a portée dans sa camionnette, l'a déposée devant les urgences de l'hôpital [À NOMMER : l'hôpital], et il est revenu pousser la voiture dans l'étang, comme convenu, pour que Béatrice le croie. Puis il s'est tu, dix ans.
-**[NOUVEAU] Pourquoi** : Béatrice détient un vieux dossier sur lui (une faute ancienne, à définir avec l'auteur) et lui verse une enveloppe chaque mois pour son silence. **L'enveloppe de l'épisode 1, c'était ça.** Et depuis que Béatrice a retrouvé la « patiente inconnue » à l'hôpital, elle sait qu'Alban lui a désobéi : chacun tient l'autre par son silence.
+**Pourquoi** : il y a une trentaine d'années, Alban a renversé un homme en voiture et s'est enfui ; l'homme est mort. Il a été retrouvé, jugé, il a purgé sa peine. Béatrice l'a embauché en le sachant, a caché son passé aux habitants et garde une copie du jugement. Elle lui verse une enveloppe chaque mois pour son silence. Ce passé donne son sens à la nuit du drame : « La première fois, j'ai laissé quelqu'un sur le bord de la route. Pas deux fois. » **L'enveloppe de l'épisode 1, c'était ça.** Et depuis que Béatrice a retrouvé la « patiente inconnue » à l'hôpital, elle sait qu'Alban lui a désobéi : chacun tient l'autre par son silence.
 **Romance possible** (jamais obligatoire) : la tendresse maladroite d'un homme qui a sauvé une femme sans jamais oser la revoir. Il lui avoue qu'il allait voir la « patiente inconnue » à l'hôpital, sans entrer, une fois par an. Lui aussi.
 **Choix** : pardonner à Alban, lui en vouloir d'avoir déplacé la voiture, ou entrer dans la romance.
 
@@ -304,19 +304,19 @@ Dans toutes les fins, une dernière vibration, après le générique, sur une li
 
 ### Nouveautés proposées
 1. ✅ L'enveloppe avec la photo et la **carte SIM** à la place de l'ancien numéro (validé).
-2. Le **réveil à l'hôpital jouable** et le miroir.
-3. Alice ancienne **trésorière bénévole** de l'association syndicale.
-4. Lou a trouvé le téléphone dans le pavillon à 15 ans.
-5. Le calendrier d'**une semaine**, du 14 au 21 juin.
-6. Béatrice a **rendu visite à Alice dans le coma chaque année** et savait qu'elle s'était réveillée.
-7. La **lettre anonyme de 2016** et l'**étiquette de confiture**.
-8. La **nage de minuit** où Monica rejoue la scène.
-9. La **dette d'Alban** : un vieux dossier détenu par Béatrice (la faute reste à définir).
-10. La révélation de Lou en fin d'épisode 4, et la publication de Béatrice en fin d'épisode 5.
+2. ✅ Le **réveil à l'hôpital jouable** et le miroir.
+3. ✅ Alice ancienne **trésorière bénévole** de l'association syndicale.
+4. ✅ Lou a trouvé le téléphone dans le pavillon à 15 ans.
+5. ✅ Le calendrier d'**une semaine**, du 14 au 21 juin.
+6. ✅ Béatrice a **rendu visite à Alice dans le coma chaque année** et savait qu'elle s'était réveillée.
+7. ✅ La **lettre anonyme de 2016** et l'**étiquette de confiture**.
+8. ✅ La **nage de minuit** où Monica rejoue la scène.
+9. ✅ La **dette d'Alban** : un accident de la route mortel suivi d'un délit de fuite, il y a une trentaine d'années ; il a purgé sa peine ; Béatrice l'a embauché en le sachant et garde le jugement. *Choix de l'assistant sur délégation de l'auteur, modifiable.*
+10. ✅ La révélation de Lou en fin d'épisode 4, et la publication de Béatrice en fin d'épisode 5.
 
 ### Noms et lieux à choisir
 - [À NOMMER] l'hôpital où Alban a déposé Alice, et la clinique de rééducation ;
 - [À NOMMER] le gendarme chargé de l'affaire en 2016 ;
 - [À NOMMER] la soignante qui a accompagné le réveil d'Alice (si on la montre) ;
 - [À NOMMER] la femme dont Alice a pris l'identité, si on la mentionne un jour ;
-- [À DÉFINIR] la faute ancienne d'Alban.
+- ~~[À DÉFINIR] la faute ancienne d'Alban~~ : définie (point 9).
