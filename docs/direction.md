@@ -23,6 +23,18 @@
 - **Différencier les visages des femmes** par la coiffure, la forme du visage et la couleur de peau.
 - Premiers portraits générés : Alice, Béatrice, Monica, Paul, Alban. Points à corriger : âges trop jeunes, visages féminins trop proches, cadrages variables, boucles d'oreilles d'Alice trop proches du losange des *Sims*, cicatrice de trachéotomie d'Alice (cou) à rétablir.
 
+## Couleur principale par personnage (validé)
+Une dominante environ aux deux tiers de la tenue (vêtement principal, foulard, bijou), avec de la liberté pour l'histoire. Elle sert aussi à l'interface (nom dans le dialogue, bulle des SMS, jauge de relation), à l'affiche de chaque épisode, et à la couleur sélective des scènes de nuit (la couleur de la personne que le regard d'Alice fixe). Ne pas compter sur la couleur seule : chaque personnage doit aussi se reconnaître à sa silhouette (coiffure, accessoire, forme du visage), pour les joueurs qui confondent certaines couleurs.
+
+| Personnage | Couleur principale |
+|---|---|
+| Alice | Vert bouteille |
+| Béatrice | Bordeaux |
+| Paul | Bleu nuit |
+| Monica | Noir avec accents dorés |
+| Alban | Brun rouille (terre) |
+| Lou (plus tard) | Turquoise (proposition) |
+
 ## En discussion, pas encore validé
 ### Moteur d'affichage
 Godot comme écran principal sur PC, le téléphone restant une page web reliée par QR code. Recommandation : garder le serveur actuel comme relais (histoire, téléphone, sécurité), Godot s'y connecte et affiche la scène. Prototype d'abord sur le style actuel, avec lumière, mouvement et un viseur au flou réaliste.
