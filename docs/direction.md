@@ -41,3 +41,4 @@ Piste recommandée : **« noir encré » à deux registres, façade et vérité*
 - Une signature sonore par rôle du téléphone.
 - Sons de banlieue trop calme (arrosage, taille-haie, couverts, eau de piscine).
 - Musique minimale et tendue, un motif par personnage.
+- **Principe validé : utiliser au maximum les sons et vibrations du téléphone comme effets de mise en scène.** Exemple proposé par l'auteur : pour le réveil du coma ou la scène d'hôpital, le bip du moniteur cardiaque (électrocardiogramme) sort du téléphone, qui peut aussi vibrer au rythme du pouls. Autres idées : battement de cœur qui s'accélère pendant un flirt ou une filature, obturateur et mise au point du viseur, claquement des touches du digicode, sonnerie d'un appel manqué, vibration d'un message qui arrive au pire moment.
