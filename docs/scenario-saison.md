@@ -17,7 +17,7 @@
 
 ### Ce qui peut être amélioré
 
-**1. Le premier message ne tient pas (incohérence réelle).**
+**1. Le premier message ne tient pas (incohérence réelle).** ✅ *Validé par l'auteur.*
 Le prologue dit qu'Alice a reçu un message « sur un numéro qu'elle croyait mort ». Mais son ancien téléphone est caché dans le local technique depuis dix ans : elle ne peut rien recevoir sur ce numéro. La question était restée ouverte dans `verite.md`.
 **[NOUVEAU] Proposition** : Lou envoie une **enveloppe** à la clinique de rééducation, adressée à « la patiente du 21 juin » (adresse trouvée dans le dossier de Béatrice). Dedans : la photo de 23 h 47, imprimée, et **une carte SIM prépayée**, avec un seul mot : « Gardez-la allumée. » Tous les messages anonymes passent par cette ligne.
 - Ça règle l'incohérence et la question « pourquoi le numéro est resté actif ».
@@ -303,7 +303,7 @@ Dans toutes les fins, une dernière vibration, après le générique, sur une li
 ## Partie 4 — À valider par l'auteur
 
 ### Nouveautés proposées
-1. L'enveloppe avec la photo et la **carte SIM** à la place de l'ancien numéro.
+1. ✅ L'enveloppe avec la photo et la **carte SIM** à la place de l'ancien numéro (validé).
 2. Le **réveil à l'hôpital jouable** et le miroir.
 3. Alice ancienne **trésorière bénévole** de l'association syndicale.
 4. Lou a trouvé le téléphone dans le pavillon à 15 ans.

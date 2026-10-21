@@ -39,7 +39,8 @@ const nodes: Record<string, StoryNode> = {
     memory("De la nuit du 21 juin, il ne reste que des éclats. De l'eau froide. Une lumière bleue. Une voix qui disait : « Laisse-la. »"),
     narr("Pour tout le monde, Alice Marchal s'est noyée dans l'étang du Moulin. On n'a jamais retrouvé le corps."),
     narr("Sur le bail de la maison n°9, l'agence a inscrit un autre nom."),
-    narr("Il y a trois mois, un message est arrivé sur un numéro que vous croyiez mort : une photo prise de nuit, sans un mot. C'est elle qui vous a décidée à revenir."),
+    narr("Il y a trois mois, une enveloppe sans expéditeur est arrivée à la clinique, adressée à « la patiente du 21 juin ». Dedans : une photo prise de nuit, une carte SIM, et trois mots. « Gardez-la allumée. »"),
+    narr("Depuis, votre téléphone a deux lignes : la vôtre, et celle de l'inconnu. C'est cette photo qui vous a décidée à revenir."),
     input('Quel nom porte votre nouvelle identité ?', ['Natasha Lusky', 'Nora Vidal', 'Juliette Armand']),
     narr("{alias}. Traductrice, quarante et un ans, sans enfant, sans passé. Le nom d'une femme qui n'en avait plus besoin, et des papiers qui ont coûté tout ce qui vous restait."),
   ], 's1'),
@@ -327,10 +328,10 @@ const nodes: Record<string, StoryNode> = {
   // ─────────────────────────────── Scène 4 — Le message
   ...seq('s3', allee('nuit'), [
     title('Scène 4', 'Le message'),
-    narr('Une deuxième vibration, presque aussitôt. Numéro masqué. Vous connaissez ce numéro : c’est lui qui vous a décidée à revenir.'),
+    narr('Une deuxième vibration, presque aussitôt. Pas sur votre ligne : sur la seconde. La ligne de l’inconnu, muette depuis trois mois.'),
     sms({
       thread: 'anonyme',
-      contact: 'Numéro masqué',
+      contact: 'Ligne 2 · Inconnu',
       incoming: [
         { text: "Vous posez beaucoup de questions sur le 21 juin." },
         { text: 'Regardez la photo encore une fois. Vous savez maintenant où elle a été prise.' },
@@ -345,10 +346,10 @@ const nodes: Record<string, StoryNode> = {
     }),
   ]),
   ...seq('s3.qui', allee('nuit'), [
-    sms({ thread: 'anonyme', contact: 'Numéro masqué', incoming: [{ text: "Quelqu'un qui était là." }], dismiss: { label: 'Regarder la photo' } }),
+    sms({ thread: 'anonyme', contact: 'Ligne 2 · Inconnu', incoming: [{ text: "Quelqu'un qui était là." }], dismiss: { label: 'Regarder la photo' } }),
   ], 's3.photo'),
   ...seq('s3.erreur', allee('nuit'), [
-    sms({ thread: 'anonyme', contact: 'Numéro masqué', incoming: [{ text: 'Non.' }], dismiss: { label: 'Regarder la photo' } }),
+    sms({ thread: 'anonyme', contact: 'Ligne 2 · Inconnu', incoming: [{ text: 'Non.' }], dismiss: { label: 'Regarder la photo' } }),
   ], 's3.photo'),
   ...seq('s3.photo', { ...allee('nuit'), photo: 'pavillon-2347' }, [
     narr('Vous rouvrez la photo que vous connaissez par cœur. Jusqu’ici, vous ne saviez pas où elle avait été prise. Maintenant, vous le savez : le pavillon de la piscine, que vous avez vu ce soir par la baie vitrée. Devant, une petite voiture rouge.'),
@@ -550,7 +551,7 @@ const nodes: Record<string, StoryNode> = {
     narr('Votre téléphone vibre une dernière fois.'),
     sms({
       thread: 'anonyme',
-      contact: 'Numéro masqué',
+      contact: 'Ligne 2 · Inconnu',
       incoming: [
         { text: 'Vous avez trouvé mon cadeau.', when: { not: { flag: 'alban_a_le_telephone' } } },
         { text: 'Vous ne devriez pas faire confiance au jardinier.', when: { flag: 'alban_a_le_telephone' } },
