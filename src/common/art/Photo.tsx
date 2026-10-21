@@ -28,7 +28,7 @@ function BeaAlban({ blur }: { blur: boolean }) {
           <path d="M945 600 L950 505 Q965 492 980 505 L985 600 Z" fill="#4a2028" />
           <circle cx="965" cy="482" r="14" fill="#d2b190" />
           <path d="M951 482 Q951 462 966 462 Q980 462 980 482 Q972 472 951 482 Z" fill="#d1b274" />
-          <path d="M995 600 L998 505 Q1013 493 1028 505 L1031 600 Z" fill="#1d3a30" />
+          <path d="M995 600 L998 505 Q1013 493 1028 505 L1031 600 Z" fill="#7a4428" />
           <circle cx="1013" cy="483" r="15" fill="#b08463" />
           <path d="M998 482 Q998 464 1013 464 Q1028 464 1028 482 Q1018 473 998 482 Z" fill="#c4c4bf" />
           <path d="M978 515 L997 521" stroke="#4a2028" strokeWidth="6" strokeLinecap="round" />

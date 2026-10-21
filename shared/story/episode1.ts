@@ -133,7 +133,7 @@ const nodes: Record<string, StoryNode> = {
     sms({
       thread: 'beatrice',
       contact: 'Béatrice Vasseur',
-      incoming: [{ text: "Dîner 20 h au 14, allée des Tilleuls. Tenue correcte mais pas guindée 😉 Monica déteste qu'on arrive en avance. — H." }],
+      incoming: [{ text: "Dîner 20 h au 14, allée des Tilleuls. Tenue correcte mais pas guindée 😉 Monica déteste qu'on arrive en avance. — B." }],
       replies: [
         { id: 'merci', text: 'Merci Béatrice, à ce soir.', effects: { rel: { beatrice: 1 } }, next: 's1.soir' },
         { id: 'vin', text: "J'apporterai une bouteille. Rouge ?", effects: { flags: { bouteille: true } }, next: 's1.vin' },
@@ -263,7 +263,7 @@ const nodes: Record<string, StoryNode> = {
     stage({ photo: undefined }),
   ], 's3w.paul'),
   ...seq('s3w.floue', { ...allee('nuit'), photo: 'bea-alban-floue' }, [
-    narr('Trop de tremblement : le cliché n’est qu’un flou de lumière. Mais vous avez reconnu la coiffure claire de Béatrice et la veste verte d’Alban.'),
+    narr('Trop de tremblement : le cliché n’est qu’un flou de lumière. Mais vous avez reconnu la coiffure claire de Béatrice et la veste rouille d’Alban.'),
     narr("Que se disaient-ils, si près l'un de l'autre, à cette heure ?"),
     stage({ photo: undefined }),
   ], 's3w.paul'),
@@ -401,7 +401,7 @@ const nodes: Record<string, StoryNode> = {
   ]),
   ...seq('s4.cachee', pavillon('interieur'), [
     narr('La lumière s’attarde sur la vitre, puis s’éloigne. Vous comptez jusqu’à cent avant de respirer.'),
-    withFx({ flags: { vu_alban: true }, clues: ['veste-verte'] }, narr('Dans l’allée, vous apercevez une veste vert bouteille qui s’éloigne. Alban.')),
+    withFx({ flags: { vu_alban: true }, clues: ['veste-alban'] }, narr('Dans l’allée, vous apercevez une veste de travail couleur rouille qui s’éloigne. Alban.')),
   ], 's5'),
   ...seq('s4.surprise', { decor: 'pavillon', time: 'interieur', cast: [{ id: 'alban', pos: 'centre', mood: 'froid' }] }, [
     narr('Le faisceau vous trouve.'),
@@ -588,7 +588,7 @@ export const episode1: Story = {
     'photo-2347': { id: 'photo-2347', title: 'La photo de 23 h 47', text: 'La voiture d’Alice devant le pavillon à 23 h 47, alors qu’elle est censée être partie à 22 h.' },
     registre: { id: 'registre', title: 'Le registre des clés', text: '21 juin : « Clé rendue — 23 h 30 — P.D. », puis « 00 h 40 — A.R. ».' },
     'telephone-alice': { id: 'telephone-alice', title: 'Le téléphone d’Alice', text: 'Caché dans le local technique du pavillon depuis dix ans. Carte SIM intacte.' },
-    'veste-verte': { id: 'veste-verte', title: 'La veste verte', text: 'Alban faisait une ronde au pavillon, la nuit où vous y êtes entrée.' },
+    'veste-alban': { id: 'veste-alban', title: 'La veste rouille', text: 'Alban faisait une ronde au pavillon, la nuit où vous y êtes entrée.' },
     'bea-alban': { id: 'bea-alban', title: 'Béatrice et Alban, la nuit', text: 'Très proches, à l’entrée du domaine, passé minuit. Elle lui remet une enveloppe. Liaison, ou dette ?' },
     'bea-alban-vu': { id: 'bea-alban-vu', title: 'Deux silhouettes', text: 'Photo floue : vous avez reconnu Béatrice et Alban, très proches, sous le dernier lampadaire. Pas de preuve.' },
     'paul-trouble': { id: 'paul-trouble', title: 'Paul vous trouve « familière »', text: 'Paul ne vous a pas reconnue, mais quelque chose en vous le trouble. Il vous invite chez lui, à l’atelier.' },

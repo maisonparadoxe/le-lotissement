@@ -11,8 +11,8 @@ export function Pair() {
       <path d="M945 600 L950 505 Q965 492 980 505 L985 600 Z" fill="#3a1820" />
       <circle cx="965" cy="482" r="14" fill="#c9a98a" />
       <path d="M951 482 Q951 462 966 462 Q980 462 980 482 Q972 472 951 482 Z" fill="#c4a468" />
-      {/* Alban : veste vert bouteille, cheveux gris */}
-      <path d="M995 600 L998 505 Q1013 493 1028 505 L1031 600 Z" fill="#173027" />
+      {/* Alban : veste brun rouille, cheveux gris */}
+      <path d="M995 600 L998 505 Q1013 493 1028 505 L1031 600 Z" fill="#6b3a22" />
       <circle cx="1013" cy="483" r="15" fill="#a67c5e" />
       <path d="M998 482 Q998 464 1013 464 Q1028 464 1028 482 Q1018 473 998 482 Z" fill="#b9b9b4" />
       {/* sa main sur lui, l'enveloppe entre eux */}

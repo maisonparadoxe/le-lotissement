@@ -188,7 +188,7 @@ function Allee({ time }: { time: Exclude<TimeOfDay, 'interieur'> }) {
       {time === 'jour' && (
         <g>
           {/* le jardinier, au loin */}
-          <rect x="986" y="560" width="26" height="46" rx="8" fill="#1F3D33" />
+          <rect x="986" y="560" width="26" height="46" rx="8" fill="#6B3A22" />
           <circle cx="999" cy="550" r="11" fill="#C99A7A" />
           <path d="M988 545 Q999 532 1010 545 Z" fill="#B8B8B4" />
           <line x1="1012" y1="575" x2="1040" y2="560" stroke="#3A3A3A" strokeWidth="4" />
