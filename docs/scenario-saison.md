@@ -212,7 +212,7 @@ Au bord de l'étang, la nuit, la pluie. **Gameplay — reconstitution du souveni
 *Scène marquante : la mémoire enfin rendue, au bord de l'eau où tout le monde la croit morte.*
 
 **Cliffhanger** : à 3 h du matin, le groupe de discussion du lotissement s'allume. Béatrice publie **une photo d'Alice dans le coma**, avec ces mots : « Notre nouvelle voisine s'appelle en réalité Alice Marchal. Elle vit sous un faux nom. J'ai prévenu la gendarmerie. » Les réactions affluent. Tout le monde sait.
-*Variante* : si Alice a exposé Béatrice à l'assemblée, Béatrice publie en plus des preuves de la fausse identité (exposition maximale).
+*Variante* : si Alice a exposé Béatrice à l'assemblée, Béatrice publie en plus des preuves de la fausse identité : l'**avis de décès** de la voisine de chambre dont Alice porte le nom, retrouvé à la clinique où Béatrice venait chaque année (exposition maximale).
 
 ---
 
@@ -318,5 +318,5 @@ Dans toutes les fins, une dernière vibration, après le générique, sur une li
 - [À NOMMER] l'hôpital où Alban a déposé Alice, et la clinique de rééducation ;
 - [À NOMMER] le gendarme chargé de l'affaire en 2016 ;
 - [À NOMMER] la soignante qui a accompagné le réveil d'Alice (si on la montre) ;
-- [À NOMMER] la femme dont Alice a pris l'identité, si on la mentionne un jour ;
+- ✅ la femme dont Alice a pris l'identité : sa voisine de chambre à la clinique (piste A, validée). Son nom est celui que choisit le joueur ; rien à nommer ;
 - ~~[À DÉFINIR] la faute ancienne d'Alban~~ : définie (point 9).
