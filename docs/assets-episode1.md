@@ -10,7 +10,7 @@ Le jeu tourne déjà sans ces fichiers (dessins SVG et sons synthétisés). Il s
 
 **Conventions**
 - Noms en minuscules, sans accents ni espaces, avec des tirets.
-- Images en PNG. Sons en WAV ou OGG (je convertis). Voix en WAV.
+- Images en PNG. Sons en WAV ou OGG (je convertis). Pas de voix pour l'instant (voir partie 3).
 - Dossiers :
   - `assets/images/personnages/`
   - `assets/images/decors/`
@@ -20,7 +20,6 @@ Le jeu tourne déjà sans ces fichiers (dessins SVG et sons synthétisés). Il s
   - `assets/sons/ambiances/`
   - `assets/sons/effets/`
   - `assets/sons/musique/`
-  - `assets/voix/`
 
 ---
 
@@ -302,6 +301,7 @@ De 30 à 60 secondes, bouclables sans coupure audible.
 | `lampe-torche.wav` | P2 | Clic d'une lampe torche. |
 | `soignante-court.wav` | P2 | Pas qui s'éloignent en courant, porte battante (réveil). |
 | `interrupteur.wav` | P3 | Alice éteint la lampe (scène 4). |
+| `souffle-sous-l-eau.wav` | **P1** | Remplace la voix du souvenir « Laisse-la. » : un souffle étouffé, comme entendu sous l'eau, 2 à 3 s, sans aucun mot. Le texte s'affiche à l'écran et le téléphone vibre. |
 
 ### 2.4 Musique — `assets/sons/musique/`
 
@@ -319,16 +319,21 @@ Minimale et tendue : piano, cordes, basse, un peu d'électronique. Pas de parole
 
 ---
 
-## 3. Voix — seulement l'indispensable
+## 3. Voix — reportées
 
-Le jeu reste un jeu à lire : pas de doublage des dialogues. Une voix n'est indispensable que lorsqu'elle **est** l'énigme ou l'objet de jeu.
+**Décision de l'auteur : pas de voix pour l'instant, mais l'idée est gardée pour plus tard.**
+Les répliques sont affichées en texte, accompagnées de sons sans paroles. Si des voix sont enregistrées un jour, elles s'ajouteront sans rien changer d'autre.
 
-| Fichier | Prio | Texte | Indications |
-|---|---|---|---|
-| `voix-laisse-la.wav` | **P1, la seule vraiment indispensable** | « Laisse-la. » | Voix de femme, chuchotée, sèche, sans émotion. Enregistrez 3 prises (murmure, plus ferme, presque un souffle). Je la traiterai « sous l'eau ». **C'est la voix de Béatrice**, mais le joueur ne doit pas la reconnaître dans l'épisode 1. Si Béatrice est doublée un jour, ce devra être la même comédienne. |
-| `voix-elle-revient.wav` | P2 | « Elle revient ! Appelez le médecin : la patiente du 21 juin revient ! » | Voix de femme, la soignante, entendue de loin, d'abord étouffée. Peut se faire avec n'importe quelle voix féminine. |
+| Plus tard | Texte | En attendant |
+|---|---|---|
+| `voix-laisse-la.wav` (épisode 1) | « Laisse-la. » | Texte du souvenir + `souffle-sous-l-eau.wav` + vibration. C'est la voix de Béatrice : si elle est doublée un jour, ce sera la même comédienne, méconnaissable ici. |
+| `voix-elle-revient.wav` (épisode 1) | « Elle revient ! Appelez le médecin : la patiente du 21 juin revient ! » | Texte + `soignante-court.wav`. |
+| `voix-paul-messagerie.wav` (épisode 2) | « Rappelle-moi. Je t'en supplie. Ne fais pas ça. » | Écran de messagerie (21 juin 2016, 23 h 52), onde sonore, transcription mot à mot, et un son de messagerie abîmée sans paroles. |
+| `voix-lou-appel.wav` (épisode 4) | L'appel de la ligne de l'inconnu | Écran d'appel en cours, sous-titres, ligne qui grésille ; le joueur répond par des choix. |
 
-**À prévoir pour l'épisode 2** (pas maintenant) : le message vocal de Paul, joué par le haut-parleur du téléphone : « Rappelle-moi. Je t'en supplie. Ne fais pas ça. » C'est le cœur de la première scène de l'épisode 2. Ce sera la voix de Paul.
+**Sons sans paroles à prévoir pour les épisodes suivants** (pas pour l'épisode 1) :
+- `messagerie-abimee.wav` (épisode 2, téléphone) : bip de messagerie, grésillements, souffle, une respiration, 8 à 10 s, sans mot ;
+- `ligne-gresille.wav` (épisode 4, téléphone) : ligne téléphonique instable en boucle, petits silences, sans mot.
 
 ---
 
@@ -337,8 +342,8 @@ Le jeu reste un jeu à lire : pas de doublage des dialogues. Une voix n'est indi
 | | P1 | P2 | P3 |
 |---|---|---|---|
 | Images | 25 (16 portraits, 7 décors, 2 photos) + 1 étiquette écrite à la main | 9 | 2 |
-| Sons | 21 | 11 | 2 |
-| Voix | 1 | 1 | — |
+| Sons | 22 | 11 | 2 |
+| Voix | reportées | | |
 
 **Ordre conseillé**
 1. Les 16 portraits : c'est ce qui change le plus l'impression du jeu.
@@ -346,4 +351,4 @@ Le jeu reste un jeu à lire : pas de doublage des dialogues. Une voix n'est indi
 3. L'étiquette écrite à la main.
 4. Les sons du téléphone.
 5. Les ambiances.
-6. La voix « Laisse-la ».
+6. Le souffle sous l'eau du souvenir.

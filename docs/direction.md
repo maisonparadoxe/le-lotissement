@@ -60,6 +60,9 @@ Piste recommandée : **« noir encré » à deux registres, façade et vérité*
 - Pistes de référence : couvertures de romans noirs de poche des années 50-60, *Sin City* (couleur sélective), *Blacksad*.
 - On s'inspire sans copier le style d'un dessinateur en particulier.
 
+### Voix (décision de l'auteur)
+Pas de voix pour l'instant : le jeu se lit. Les moments où une voix compterait (« Laisse-la. », le message vocal de Paul, l'appel de Lou) passent par le texte, des sons sans paroles et l'écran du téléphone. L'idée des voix est gardée pour plus tard (liste dans `assets-episode1.md`).
+
 ### Identité sonore (idées)
 - Les sons du téléphone (SMS, touches du digicode, obturateur du viseur) sortent du haut-parleur du téléphone ; musique et ambiance sortent de l'ordinateur.
 - Une signature sonore par rôle du téléphone.
